@@ -1,0 +1,42 @@
+{
+  "name": "vite-kea-react-ts-template",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"pnpm run dev:kea\" \"pnpm run dev:vite\" -n KEA,VITE -c green,magenta",
+    "dev:kea": "kea-typegen watch --write-paths",
+    "dev:vite": "vite",
+    "build": "tsc && vite build",
+    "prettier": "prettier --write src",
+    "preview": "vite preview",
+    "typegen": "kea-typegen write --write-paths"
+  },
+  "dependencies": {
+    "@emotion/is-prop-valid": "^1.2.1",
+    "grommet": "2.35.0-alpha.1",
+    "grommet-icons": "^4.11.0",
+    "kea": "^3.0.2",
+    "kea-forms": "^3.0.3",
+    "kea-loaders": "^3.0.0",
+    "kea-router": "^3.1.0",
+    "mathjs": "^12.1.0",
+    "polished": "^4.2.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "styled-components": "^6.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.18",
+    "@types/react-dom": "^18.0.6",
+    "@types/styled-components": "^5.1.32",
+    "@vitejs/plugin-react": "^4.2.0",
+    "concurrently": "^8.2.2",
+    "kea-test-utils": "^0.2.2",
+    "kea-typegen": "^3.1.3",
+    "prettier": "^3.1.0",
+    "typescript": "^4.9.5",
+    "vite": "^5.0.2"
+  }
+}
