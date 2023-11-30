@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "compile": "tsc",
     "dev": "concurrently \"pnpm run dev:kea\" \"pnpm run dev:vite\" -n KEA,VITE -c green,magenta",
     "dev:kea": "kea-typegen watch --write-paths",
     "dev:vite": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "prettier": "prettier --write src",
     "preview": "vite preview",
     "typegen": "kea-typegen write --write-paths"
