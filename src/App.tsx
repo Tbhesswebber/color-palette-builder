@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { StyleSheetManager } from "styled-components";
 import { GlobalStyles } from "./globalStyles";
 import { oklchFormLogic, type Formula } from "./logics/oklchFormLogic";
 import { Palette } from "./Palette";
@@ -8,6 +8,7 @@ import { Box, Grommet } from "grommet";
 import { applyColorsToTheme } from "./theme";
 import React from "react";
 import { ModeToggle, useModeToggle } from "./ModeToggle";
+import isPropValid from "@emotion/is-prop-valid";
 
 const AppWrapper = styled(Box)`
   height: 100dvh;
@@ -38,35 +39,47 @@ export function App() {
   }, [tintCount]);
 
   return (
-    <Grommet
-      full
-      options={{
-        box: { cssGap: true },
-        drop: { checkContainingBlock: true },
-      }}
-      theme={theme}
-      themeMode={mode === "system" ? "auto" : mode}
-    >
-      <GlobalStyles vars={cssVars} />
-      <AppWrapper
-        direction="column"
-        pad="medium"
-        gap="medium"
-        background={{dark: "black", light: "white"}}
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <Grommet
+        full
+        options={{
+          box: { cssGap: true },
+          drop: { checkContainingBlock: true },
+        }}
+        theme={theme}
+        themeMode={mode === "system" ? "auto" : mode}
       >
-        <ModeToggle mode={mode} toggle={toggle}/>
-        <ColorForm />
-        <Box direction="row" basis="100%" justify="between" gap="xsmall">
-          <Palette prefix="colors_black" count={greys.length} />
-          {colors.map((paletteColors, index) => (
-            <Palette
-              key={paletteColors[0]?.css}
-              prefix={`colors_${index}`}
-              count={tintCount}
-            />
-          ))}
-        </Box>
-      </AppWrapper>
-    </Grommet>
+        <GlobalStyles vars={cssVars} />
+        <AppWrapper
+          direction="column"
+          pad="medium"
+          gap="medium"
+          background={{dark: "black", light: "white"}}
+        >
+          <ModeToggle mode={mode} toggle={toggle}/>
+          <ColorForm />
+          <Box direction="row" basis="100%" justify="between" gap="xsmall">
+            <Palette prefix="colors_black" count={greys.length} />
+            {colors.map((paletteColors, index) => (
+              <Palette
+                key={paletteColors[0]?.css}
+                prefix={`colors_${index}`}
+                count={tintCount}
+              />
+            ))}
+          </Box>
+        </AppWrapper>
+      </Grommet>
+    </StyleSheetManager>
   );
+}
+
+// This implements the default behavior from styled-components v5
+function shouldForwardProp(propName: string, target: any) {
+    if (typeof target === "string") {
+        // For HTML elements, forward the prop if it is a valid HTML attribute
+        return isPropValid(propName);
+    }
+    // For other elements, forward all props
+    return true;
 }

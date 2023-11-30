@@ -31,7 +31,6 @@
   "devDependencies": {
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
-    "@types/styled-components": "^5.1.32",
     "@vitejs/plugin-react": "^4.2.0",
     "concurrently": "^8.2.2",
     "kea-test-utils": "^0.2.2",
