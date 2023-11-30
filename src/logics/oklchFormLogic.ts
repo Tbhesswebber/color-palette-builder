@@ -48,7 +48,7 @@ const defaultValues: Required<ColorFormFields> = {
   tintCount: 7,
   analogousHueCount: 3,
   analogousHueGap: 36,
-  complementaryHueCount: 0,
+  complementaryHueCount: 1,
   complementaryHueGap: 36,
 };
 

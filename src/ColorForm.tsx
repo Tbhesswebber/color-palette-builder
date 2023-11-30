@@ -177,6 +177,7 @@ function Field(props: Omit<FieldProps, "template"> & { area?: string }) {
     },
     []
   );
+
   return <KeaField {...props} template={template} />;
 }
 
@@ -317,8 +318,8 @@ export function ColorForm() {
               min="0"
               max="10"
               step="1"
-              name="complementaryHueCount"
-              id="complementaryHueCount"
+              name={ControlGridArea.ComplementaryHueCount}
+              id={ControlGridArea.ComplementaryHueCount}
             ></RangeInput>
           </Field>
 
