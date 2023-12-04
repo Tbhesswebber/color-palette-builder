@@ -58,7 +58,7 @@ export function App() {
         >
           <ModeToggle mode={mode} toggle={toggle}/>
           <ColorForm />
-          <Box direction="row" basis="100%" justify="between" gap="xsmall">
+          <Box direction="row" basis="100%" height={{min: "300px"}} justify="between" gap="xsmall">
             <Palette prefix="colors_black" count={greys.length} />
             {colors.map((paletteColors, index) => (
               <Palette

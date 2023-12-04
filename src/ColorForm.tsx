@@ -1,4 +1,3 @@
-import { useActions, useValues } from "kea";
 import { oklchFormLogic } from "./logics/oklchFormLogic";
 import {
   Field as KeaField,
@@ -16,10 +15,8 @@ import {
   Paragraph,
   ResponsiveContext,
   Grid,
-  TextInput,
   MaskedInput,
   BoxExtendedProps,
-  Text,
 } from "grommet";
 import { Subtract, Add } from "grommet-icons";
 
@@ -87,7 +84,7 @@ function RangeInput({
         onClick={() => {
           onChange && onChange(Number(value) - Number(step));
         }}
-        size="medium"
+        size={size === "small" ? "small" : "medium"}
         alignSelf="start"
         secondary
         hoverIndicator={{ elevation: "small", background: {} }}
@@ -99,7 +96,7 @@ function RangeInput({
           max={max}
           step={Number(step)}
           color="control"
-          value={value}
+          value={String(value)}
           onChange={({ target: { value } }) => onChange && onChange(value)}
         />
         <Box direction="row" fill justify="between">
@@ -112,9 +109,9 @@ function RangeInput({
         disabled={Number(value) >= Number(max)}
         icon={<Add color="control" />}
         onClick={() => {
-          console.log(value);
           onChange && onChange(Number(value) + Number(step));
         }}
+        size={size === "small" ? "small" : "medium"}
         alignSelf="start"
         secondary
         hoverIndicator={{ elevation: "small", background: {} }}
@@ -178,7 +175,7 @@ function Field(props: Omit<FieldProps, "template"> & { area?: string }) {
     []
   );
 
-  return <KeaField {...props} template={template} />;
+  return <KeaField {...props} template={template} noStyle />;
 }
 
 const enum ControlGridArea {
