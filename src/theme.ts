@@ -30,6 +30,9 @@ const customTheme: ThemeType = {
       xlarge: "48px",
     },
   },
+  anchor: {
+    color: "primary"
+  },
   button: {
     padding: { horizontal: "16", vertical: "12" },
     size: {
