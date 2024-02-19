@@ -2,14 +2,6 @@ import {
   kea,
   path,
   selectors,
-  defaults,
-  key,
-  props,
-  reducers,
-  SelectorDefinition,
-  Selector,
-  Logic,
-  LogicPropSelectors,
 } from "kea";
 import { DeepPartialMap, ValidationErrorType, forms } from "kea-forms";
 import { parser } from "mathjs";
@@ -54,7 +46,6 @@ const defaultValues: Required<ColorFormFields> = {
 
 export const oklchFormLogic = kea<oklchFormLogicType>([
   path(["src", "colorLogic"]),
-  //   defaults(defaultValues),
   forms({
     colorForm: {
       defaults: defaultValues as ColorFormFields,
@@ -136,10 +127,10 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
         } catch {
           return []
         }
-        const colors = Array.from({ length: tints }, (_, index) => {
+        const colors = Array.from({ length: tints}, (_, index) => {
           const values = {
             hue,
-            chroma: 0.005,
+            chroma: 0.017,
             lightness: round(lightnessParser.evaluate(`f(${index},${tints})`)),
           };
 
@@ -151,14 +142,14 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
 
         return [{
             hue,
-            chroma: 0.005,
+            chroma: 0.01,
             lightness: 99,
-            css: `oklch(99% 0.005 ${hue}deg)`
+            css: `oklch(99% 0.01 ${hue}deg)`
           }, ...colors, {
             hue,
-            chroma: 0.005,
-            lightness: 1,
-            css: `oklch(1% 0.005 ${hue}deg)`
+            chroma: 0.017,
+            lightness: 0,
+            css: `oklch(1% 0.017 ${hue}deg)`
           }]
       },
     ],
