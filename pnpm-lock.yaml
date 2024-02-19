@@ -15,16 +15,16 @@ dependencies:
     specifier: ^4.11.0
     version: 4.11.0(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.1)
   kea:
-    specifier: ^3.0.2
+    specifier: ^3.1.5
     version: 3.1.5(react@18.2.0)
   kea-forms:
-    specifier: ^3.0.3
-    version: 3.0.3(kea@3.1.5)
+    specifier: ^3.1.1
+    version: 3.1.1(kea@3.1.5)
   kea-loaders:
     specifier: ^3.0.0
     version: 3.0.0(kea@3.1.5)
   kea-router:
-    specifier: ^3.1.0
+    specifier: ^3.1.4
     version: 3.1.4(kea@3.1.5)
   mathjs:
     specifier: ^12.1.0
@@ -62,8 +62,8 @@ devDependencies:
     specifier: ^0.2.2
     version: 0.2.4(kea@3.1.5)
   kea-typegen:
-    specifier: ^3.1.3
-    version: 3.3.3(typescript@4.9.5)
+    specifier: ^3.3.4
+    version: 3.3.4(typescript@4.9.5)
   prettier:
     specifier: ^3.1.0
     version: 3.1.0
@@ -2250,8 +2250,8 @@ packages:
     hasBin: true
     dev: true
 
-  /kea-forms@3.0.3(kea@3.1.5):
-    resolution: {integrity: sha512-ApiirM7K103ULa0hNNcJHiJ0ffvuVIn9Nwg4wsEadfyraV9GLrWVbUeZWW0qFI2zTlkizDplM/gc3gGUfQTs9g==}
+  /kea-forms@3.1.1(kea@3.1.5):
+    resolution: {integrity: sha512-JTxElXdd/YifBe80V6HFEdZ2ISpOBUP9EbwpzKcLiBOZn5PO2+M+jPcTLdR0HSmVWY7fDvLTCu6N16W/nWvG2Q==}
     peerDependencies:
       kea: '>= 3.0.1'
     dependencies:
@@ -2284,8 +2284,8 @@ packages:
       kea-waitfor: 0.2.1(kea@3.1.5)
     dev: true
 
-  /kea-typegen@3.3.3(typescript@4.9.5):
-    resolution: {integrity: sha512-oucNKthDtXKsjmhzkDcDP0VaZO49pgqjQ1MdbWPwmB0zEp4P+n9fztOYp2tKH9HHqcyMFU2lW8CDuken33DMmA==}
+  /kea-typegen@3.3.4(typescript@4.9.5):
+    resolution: {integrity: sha512-5bj9EOq0q0JZC5Krkdt5uf1MqBTYHKL+FbbRbSRUey3BMaLMlaSxD7GYL532BEgwvQ/zMTb0nTJ1EY8t4sreDw==}
     hasBin: true
     peerDependencies:
       typescript: '>=4.9.5'
