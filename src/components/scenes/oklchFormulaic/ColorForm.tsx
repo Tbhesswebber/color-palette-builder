@@ -1,4 +1,4 @@
-import { oklchFormLogic } from "./logics/oklchFormLogic";
+import { oklchFormLogic } from "../../../logics/oklchFormLogic";
 import {
   Field as KeaField,
   Form,
@@ -219,20 +219,20 @@ export function ColorForm() {
     if (size === "small") {
       return {
         columns: ["1fr"],
-        rows: "fit-content",
+        rows: ["fit-content"],
         areas: smallGridAreas,
       };
     }
     if (size === "medium") {
       return {
         columns: ["1fr", "1fr"],
-        rows: "fit-content",
+        rows: ["fit-content"],
         areas: mediumGridAreas,
       };
     }
     return {
       columns: ["1fr", "1fr", "1fr"],
-      rows: "fit-content",
+      rows: ["fit-content"],
       areas: largeGridAreas,
     };
   }, [size]);
