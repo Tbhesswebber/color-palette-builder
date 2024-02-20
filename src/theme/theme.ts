@@ -22,8 +22,8 @@ export const customTheme: ThemeType = {
       },
     },
     font: {
-      "family": Font.SansSerif
-    }
+      family: Font.SansSerif,
+    },
   },
   icon: {
     size: {
@@ -34,7 +34,7 @@ export const customTheme: ThemeType = {
     },
   },
   anchor: {
-    color: "primary"
+    color: "primary",
   },
   button: {
     padding: { horizontal: "16", vertical: "12" },

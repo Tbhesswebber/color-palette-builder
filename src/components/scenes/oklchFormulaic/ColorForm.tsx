@@ -119,12 +119,9 @@ export function ColorForm() {
             label="Chroma Formula"
             hint={
               <>
-                <p>
-                  <Code>x</Code> is the 0-based index of the current tint
-                </p>
-                <p>
-                  <Code>y</Code> is the total number of tints
-                </p>
+                <Code>x</Code> is the 0-based index of the current tint
+                <br />
+                <Code>y</Code> is the total number of tints
               </>
             }
           >
@@ -139,12 +136,9 @@ export function ColorForm() {
             label="Lightness Formula"
             hint={
               <>
-                <p>
-                  <Code>x</Code> is the 0-based index of the current tint
-                </p>
-                <p>
-                  <Code>y</Code> is the total number of tints
-                </p>
+                <Code>x</Code> is the 0-based index of the current tint
+                <br />
+                <Code>y</Code> is the total number of tints
               </>
             }
           >
