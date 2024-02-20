@@ -1,7 +1,7 @@
-import { ThemeType, grommet } from "grommet";
-import { deepMerge } from "grommet/utils";
+import { ThemeType } from "grommet";
+import { Font } from "./constants";
 
-const customTheme: ThemeType = {
+export const customTheme: ThemeType = {
   global: {
     colors: {
       control: "primary",
@@ -21,6 +21,9 @@ const customTheme: ThemeType = {
         value: undefined,
       },
     },
+    font: {
+      "family": Font.SansSerif
+    }
   },
   icon: {
     size: {
@@ -60,9 +63,3 @@ const customTheme: ThemeType = {
     },
   },
 };
-
-export function applyColorsToTheme(
-  colors: Record<string, string | { dark: string; light: string } | undefined>
-) {
-  return deepMerge(grommet, customTheme, { global: { colors } });
-}

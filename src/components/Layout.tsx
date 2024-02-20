@@ -1,6 +1,6 @@
 import { ThemeType, Grommet, Box } from "grommet";
 import styled from "styled-components";
-import { GlobalStyles } from "../globalStyles";
+import { GlobalStyles } from "../theme/globalStyles";
 import { ModeToggle, useModeToggle } from "./ModeToggle";
 import { Menu } from "./Menu";
 
