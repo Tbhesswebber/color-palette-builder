@@ -129,35 +129,6 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
       },
     ],
   }),
-  // connect(colorLogic),
-  // listeners(({ values }) => ({
-  //   setColorFormValue: async (_, breakpoint) => {
-  //     await breakpoint(50);
-  //     colorLogic.actions.setColors(
-  //       calculateColors(
-  //         values
-  //       )
-  //     );
-  //     colorLogic.actions.setGreys(
-  //       calculateGreys(
-  //         values
-  //       )
-  //     );
-  //     await breakpoint(50);
-  //   },
-  // })),
-  // afterMount(({ values }) => {
-  //   colorLogic.actions.setColors(
-  //     calculateColors(
-  //       values
-  //     )
-  //   );
-  //   colorLogic.actions.setGreys(
-  //     calculateGreys(
-  //       values
-  //     )
-  //   );
-  // }),
   connectColorLogic({"greys": calculateGreys, "colors": calculateColors, listenerAction: "setColorFormValue"})
 ]);
 
