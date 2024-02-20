@@ -13,6 +13,8 @@ const ModeToggleContainer = styled(Box)`
   bottom: 1rem;
   right: 1rem;
   overflow: hidden;
+  isolation: isolate;
+  z-index: 2;
 
   transition: box-shadow 100ms ease-in-out;
   will-change: box-shadow;
