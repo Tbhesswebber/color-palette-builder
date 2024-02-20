@@ -26,10 +26,10 @@ export function ColorPage({children}: PropsWithChildren): JSX.Element {
       })`,
       grey: {
         light: `var(--colors_black_${
-          Math.round(tintCount / 2) - Math.floor(tintCount / 3)
+          Math.round(tintCount / 2) - Math.floor(tintCount / 3) - 1
         })`,
         dark: `var(--colors_black_${
-          Math.round(tintCount / 2) + Math.floor(tintCount / 3)
+          Math.round(tintCount / 2) + Math.floor(tintCount / 3) + 1
         })`,
       },
     });
