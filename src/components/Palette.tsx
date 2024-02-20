@@ -9,17 +9,38 @@ interface PaletteProps {
   prefix: string;
 }
 
+const PaletteWrapper = styled(Box)`
+  container-name: swatch;
+  container-type: inline-size;
+`;
+
 const Swatch = styled(Box)`
   code {
     background: inherit;
     color: transparent;
     background-clip: text;
     font-weight: bold;
+    font-size: clamp(10px, calc(10cqw - 3px), 24px);
+    filter: invert(0%) grayscale(0%) invert(0%) contrast(100%) invert(0%);
+    filter: grayscale(0%) invert(0%) contrast(100%);
+    filter: invert(100%) grayscale(100%) contrast(9000%);
+    display: none;
+    opacity: 0;
+    will-change: opacity;
+    transition: opacity 700ms ease-in-out;
   }
-
+  
   &:hover code,
   &:focus code {
-    filter: invert(100%) grayscale(100%) invert(100%) contrast(9000%) invert(100%);
+    display: revert;
+    opacity: 1;
+    transition: opacity 75ms ease-in-out;
+  }
+
+  @container swatch (max-width: 100px) {
+    code {
+      font-weight: 900;
+    }
   }
 `;
 
@@ -27,7 +48,8 @@ export function Palette({ count, prefix }: PaletteProps) {
   const colors = React.useMemo(
     () =>
       Array.from({ length: count }, (_, index): JSX.Element => {
-        const color = `var(--${prefix}_${index})`;
+        const cssVar = `--${prefix}_${index}`;
+        const color = `var(${cssVar})`;
         return (
           <Swatch
             key={color}
@@ -38,7 +60,7 @@ export function Palette({ count, prefix }: PaletteProps) {
             justify="center"
           >
             <Code>
-              {color}
+              {cssVar}
             </Code>
           </Swatch>
         );
@@ -47,8 +69,8 @@ export function Palette({ count, prefix }: PaletteProps) {
   );
 
   return (
-    <Box fill flex gap="xsmall">
+    <PaletteWrapper fill flex gap="xsmall">
       {colors}
-    </Box>
+    </PaletteWrapper>
   );
 }

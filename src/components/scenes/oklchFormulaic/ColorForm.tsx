@@ -70,9 +70,11 @@ export function ColorForm() {
             area={rangeGrid.areas ? ControlGridArea.AnalogousHueGap : undefined}
           >
             <RangeInput
-              min="1"
-              max="90"
-              step="1"
+              min="0.01"
+              minLabel={"Min Possible"}
+              max="1"
+              maxLabel={"Max Possible"}
+              step="0.01"
               name="analogousHueGap"
               id="analogousHueGap"
             ></RangeInput>
@@ -104,9 +106,11 @@ export function ColorForm() {
             }
           >
             <RangeInput
-              min="1"
-              max="90"
-              step="1"
+              min="0.01"
+              minLabel={"Min Possible"}
+              max="1"
+              maxLabel={"Max Possible"}
+              step="0.01"
               name="complementaryHueGap"
               id="complementaryHueGap"
             ></RangeInput>
