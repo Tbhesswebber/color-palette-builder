@@ -45,9 +45,9 @@ const defaultValues: Required<ColorFormFields> = {
     "f(x,y)=(0.8/(2y-y^2))x^2 + (-0.8/(2-y) + (0.8/(2y-y^2)))x + 0.04",
   tintCount: 7,
   analogousHueCount: 3,
-  analogousHueGap: 36,
+  analogousHueGap: 0.36,
   complementaryHueCount: 1,
-  complementaryHueGap: 36,
+  complementaryHueGap: 0.36,
 };
 
 export const oklchFormLogic = kea<oklchFormLogicType>([
@@ -61,52 +61,58 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
         try {
           formulaParser.evaluate(
             typeof lightnessFormula === "number"
-            ? `f(x,y)=${lightnessFormula}`
-            : lightnessFormula
-            );
-          } catch {
-            errors.lightnessFormula = "Please enter a valid number or formula";
-          }
-          return errors;
-        },
-        options: {
-          showErrorsOnTouch: true,
-        },
+              ? `f(x,y)=${lightnessFormula}`
+              : lightnessFormula
+          );
+        } catch {
+          errors.lightnessFormula = "Please enter a valid number or formula";
+        }
+        return errors;
       },
-    }),
+      options: {
+        showErrorsOnTouch: true,
+      },
+    },
+  }),
   selectors({
-      // hueFormula: formPassthroughSelector("hueFormula"),
-      chromaFormula: [
-        (s) => [s.colorForm],
-        ({ chromaFormula }) =>
+    // hueFormula: formPassthroughSelector("hueFormula"),
+    chromaFormula: [
+      (s) => [s.colorForm],
+      ({ chromaFormula }) =>
         typeof chromaFormula === "number"
-        ? `f(x,y)=${chromaFormula}`
-        : chromaFormula,
-      ],
-      lightnessFormula: [
-        (s) => [s.colorForm],
-        ({ lightnessFormula }) =>
+          ? `f(x,y)=${chromaFormula}`
+          : chromaFormula,
+    ],
+    lightnessFormula: [
+      (s) => [s.colorForm],
+      ({ lightnessFormula }) =>
         typeof lightnessFormula === "number"
-        ? `f(x,y)=${lightnessFormula}`
-        : lightnessFormula,
-      ],
-      tintCount: [
-        (s) => [s.colorForm],
-        (form: ColorFormFields) => Number(form["tintCount"]),
-      ],
-      analogousHues: [
-        (s) => [s.colorForm],
-        ({
-          analogousHueCount: count,
-          analogousHueGap: gap,
-        }: ColorFormFields) => ({ gap: Number(gap), count: Number(count) }),
-      ],
-      complementaryHues: [
-        (s) => [s.colorForm],
-        ({
-          complementaryHueCount: count,
-          complementaryHueGap: gap,
-      }: ColorFormFields) => ({ gap: Number(gap), count: Number(count) }),
+          ? `f(x,y)=${lightnessFormula}`
+          : lightnessFormula,
+    ],
+    tintCount: [
+      (s) => [s.colorForm],
+      ({tintCount}) => Number(tintCount),
+    ],
+    analogousHues: [
+      (s) => [s.colorForm],
+      ({
+        analogousHueCount: count,
+        analogousHueGap: gap,
+      }: ColorFormFields) => ({
+        gap: Number(gap) * (180 / (count - 1)),
+        count: Number(count),
+      }),
+    ],
+    complementaryHues: [
+      (s) => [s.colorForm],
+      ({
+        complementaryHueCount: count,
+        complementaryHueGap: gap,
+      }: ColorFormFields) => ({
+        gap: Number(gap) * (180 / (count - 1)),
+        count: Number(count),
+      }),
     ],
     centerPoint: [
       (s) => [s.colorForm],
@@ -119,17 +125,21 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
           count: Number(analogousHues.count),
           gap: Number(analogousHues.gap),
         });
-        
+
         let complementaryHueList: number[] = hueList(hue - 180, {
           count: Number(complementaryHues.count),
           gap: Number(complementaryHues.gap),
         });
-        
+
         return [...analogousHueList, ...complementaryHueList];
       },
     ],
   }),
-  connectColorLogic({"greys": calculateGreys, "colors": calculateColors, listenerAction: "setColorFormValue"})
+  connectColorLogic({
+    greys: calculateGreys,
+    colors: calculateColors,
+    listenerAction: "setColorFormValue",
+  }),
 ]);
 
 function calculateColors(

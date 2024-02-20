@@ -19,6 +19,12 @@ interface NumberInputProps extends InputProps {
   step: number | `${number}`;
 }
 
+interface RangeInputProps extends NumberInputProps {
+  minLabel?: string | number;
+  maxLabel?: string | number;
+  showBounds?: boolean;
+}
+
 const RangeInputContainer = styled(Box)`
   container-type: inline-size;
   container-name: range-input-container;
@@ -40,8 +46,11 @@ export function RangeInput({
   onChange,
   min,
   max,
+  minLabel,
+  maxLabel,
+  showBounds,
   step,
-}: Partial<ChildFunctionProps> & NumberInputProps) {
+}: Partial<ChildFunctionProps> & RangeInputProps) {
   const size = useContext(ResponsiveContext);
 
   return (
@@ -74,8 +83,8 @@ export function RangeInput({
           onChange={({ target: { value } }) => onChange && onChange(value)}
         />
         <Box direction="row" fill justify="between">
-          <Paragraph size="small">{min}</Paragraph>
-          <Paragraph size="small">{max}</Paragraph>
+          {showBounds !== false && <Paragraph size="small">{minLabel ?? min}</Paragraph>}
+          {showBounds !== false && <Paragraph size="small">{maxLabel ?? max}</Paragraph>}
         </Box>
       </Box>
       <Button
