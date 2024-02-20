@@ -1,6 +1,6 @@
 import { oklchFormLogic } from "../../../logics/oklchFormLogic";
 import { Form } from "kea-forms";
-import React, { useContext } from "react";
+import React from "react";
 import { Box, Grid, ResponsiveContext } from "grommet";
 import { Field } from "../../forms/Field";
 import { RangeInput } from "../../forms/RangeInput";
@@ -119,7 +119,12 @@ export function ColorForm() {
             label="Chroma Formula"
             hint={
               <>
-                Make sure that your formula takes the form <Code>f(x,y)=</Code>
+                <p>
+                  <Code>x</Code> is the 0-based index of the current tint
+                </p>
+                <p>
+                  <Code>y</Code> is the total number of tints
+                </p>
               </>
             }
           >
@@ -134,7 +139,12 @@ export function ColorForm() {
             label="Lightness Formula"
             hint={
               <>
-                Make sure that your formula takes the form <Code>f(x,y)=</Code>
+                <p>
+                  <Code>x</Code> is the 0-based index of the current tint
+                </p>
+                <p>
+                  <Code>y</Code> is the total number of tints
+                </p>
               </>
             }
           >
