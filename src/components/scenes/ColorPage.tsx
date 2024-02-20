@@ -1,6 +1,6 @@
 import { Box } from "grommet";
 import { Palette } from "../Palette";
-import { applyColorsToTheme } from "../../theme";
+import { applyColorsToTheme } from "../../theme/utils";
 import React, { PropsWithChildren } from "react";
 import { Layout } from "../Layout";
 import { useColorLogicValues } from "../../logics/colorLogic";

@@ -1,6 +1,13 @@
 import { MaskedInput } from "grommet";
 import { ChildFunctionProps } from "kea-forms";
+import { styled } from "styled-components";
+import { Font } from "../../theme/constants";
 import { InputProps } from "./types";
+
+const MonospaceMaskedInput = styled(MaskedInput)`
+    font-family: ${Font.Mono};
+    font-size: 16px;
+`;
 
 export function FormulaInput({
   value,
@@ -9,7 +16,7 @@ export function FormulaInput({
   id,
 }: Partial<ChildFunctionProps> & InputProps) {
   return (
-    <MaskedInput
+    <MonospaceMaskedInput
       value={value}
       name={name}
       id={id}
