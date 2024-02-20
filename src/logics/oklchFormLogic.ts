@@ -1,5 +1,10 @@
 import {
+  actions,
+  afterMount,
+  connect,
+  events,
   kea,
+  listeners,
   path,
   selectors,
 } from "kea";
@@ -9,6 +14,7 @@ import { round } from "../utils/format";
 
 import type { oklchFormLogicType } from "./oklchFormLogicType";
 import { hueList } from "../utils/hueSpread";
+import { colorLogic, connectColorLogic } from "./colorLogic";
 
 export type Formula = `f(x,y)=${string}`;
 
@@ -45,57 +51,61 @@ const defaultValues: Required<ColorFormFields> = {
 };
 
 export const oklchFormLogic = kea<oklchFormLogicType>([
-  path(["src", "colorLogic"]),
+  path(["src", "logics", "oklchFormLogic"]),
   forms({
     colorForm: {
       defaults: defaultValues as ColorFormFields,
-      errors: ({lightnessFormula}) => {
-        
-        const errors: DeepPartialMap<ColorFormFields, ValidationErrorType> = {  };
+      errors: ({ lightnessFormula }) => {
+        const errors: DeepPartialMap<ColorFormFields, ValidationErrorType> = {};
         const formulaParser = parser();
-      try {
-          formulaParser.evaluate(typeof lightnessFormula === "number" ? `f(x,y)=${lightnessFormula}` : lightnessFormula);
-      } catch {
-        errors.lightnessFormula = "Please enter a valid number or formula"
-      }
-      return errors;},
-      "options": {
-        "showErrorsOnTouch": true
-      }
-    },
-  }),
+        try {
+          formulaParser.evaluate(
+            typeof lightnessFormula === "number"
+            ? `f(x,y)=${lightnessFormula}`
+            : lightnessFormula
+            );
+          } catch {
+            errors.lightnessFormula = "Please enter a valid number or formula";
+          }
+          return errors;
+        },
+        options: {
+          showErrorsOnTouch: true,
+        },
+      },
+    }),
   selectors({
-    // hueFormula: formPassthroughSelector("hueFormula"),
-    chromaFormula: [
-      (s) => [s.colorForm],
-      ({ chromaFormula }) =>
+      // hueFormula: formPassthroughSelector("hueFormula"),
+      chromaFormula: [
+        (s) => [s.colorForm],
+        ({ chromaFormula }) =>
         typeof chromaFormula === "number"
-          ? `f(x,y)=${chromaFormula}`
-          : chromaFormula,
-    ],
-    lightnessFormula: [
-      (s) => [s.colorForm],
-      ({ lightnessFormula }) =>
+        ? `f(x,y)=${chromaFormula}`
+        : chromaFormula,
+      ],
+      lightnessFormula: [
+        (s) => [s.colorForm],
+        ({ lightnessFormula }) =>
         typeof lightnessFormula === "number"
-          ? `f(x,y)=${lightnessFormula}`
-          : lightnessFormula,
-    ],
-    tintCount: [
-      (s) => [s.colorForm],
-      (form: ColorFormFields) => Number(form["tintCount"]),
-    ],
-    analogousHues: [
-      (s) => [s.colorForm],
-      ({
-        analogousHueCount: count,
-        analogousHueGap: gap,
-      }: ColorFormFields) => ({ gap: Number(gap), count: Number(count) }),
-    ],
-    complementaryHues: [
-      (s) => [s.colorForm],
-      ({
-        complementaryHueCount: count,
-        complementaryHueGap: gap,
+        ? `f(x,y)=${lightnessFormula}`
+        : lightnessFormula,
+      ],
+      tintCount: [
+        (s) => [s.colorForm],
+        (form: ColorFormFields) => Number(form["tintCount"]),
+      ],
+      analogousHues: [
+        (s) => [s.colorForm],
+        ({
+          analogousHueCount: count,
+          analogousHueGap: gap,
+        }: ColorFormFields) => ({ gap: Number(gap), count: Number(count) }),
+      ],
+      complementaryHues: [
+        (s) => [s.colorForm],
+        ({
+          complementaryHueCount: count,
+          complementaryHueGap: gap,
       }: ColorFormFields) => ({ gap: Number(gap), count: Number(count) }),
     ],
     centerPoint: [
@@ -109,115 +119,118 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
           count: Number(analogousHues.count),
           gap: Number(analogousHues.gap),
         });
-
+        
         let complementaryHueList: number[] = hueList(hue - 180, {
           count: Number(complementaryHues.count),
           gap: Number(complementaryHues.gap),
         });
-
+        
         return [...analogousHueList, ...complementaryHueList];
       },
     ],
-    greys: [
-      (s) => [s.tintCount, s.lightnessFormula, s.centerPoint],
-      (tints, lightness, hue) => {
-        const lightnessParser = parser();
-        try {
-          lightnessParser.evaluate(lightness);
-        } catch {
-          return []
-        }
-        const colors = Array.from({ length: tints}, (_, index) => {
-          const values = {
-            hue,
-            chroma: 0.017,
-            lightness: round(lightnessParser.evaluate(`f(${index},${tints})`)),
-          };
-
-          return {
-            ...values,
-            css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
-          };
-        });
-
-        return [{
-            hue,
-            chroma: 0.01,
-            lightness: 99,
-            css: `oklch(99% 0.01 ${hue}deg)`
-          }, ...colors, {
-            hue,
-            chroma: 0.017,
-            lightness: 0,
-            css: `oklch(1% 0.017 ${hue}deg)`
-          }]
-      },
-    ],
-    colors: [
-      (s) => [s.tintCount, s.lightnessFormula, s.chromaFormula, s.hues],
-      (tintCount, lightness, chroma, hues): [...Color[]][] => {
-        const lightnessParser = parser();
-        try {
-          lightnessParser.evaluate(lightness);
-        } catch {
-          return []
-        }
-
-        const chromaParser = parser();
-        try {
-          chromaParser.evaluate(chroma);
-        } catch {
-          return []
-        }
-
-        return hues.map((hue) =>
-          Array.from({ length: tintCount }, (__, tintIndex) => {
-            const values = {
-              hue,
-              chroma: round(
-                chromaParser.evaluate(`f(${tintIndex},${tintCount})`)
-              ),
-              lightness: round(
-                lightnessParser.evaluate(`f(${tintIndex},${tintCount})`)
-              ),
-            };
-
-            return {
-              ...values,
-              css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
-            };
-          })
-        );
-      },
-    ],
-    cssVars: [
-      (s) => [s.colors, s.greys],
-      (hues, greys) => {
-        const hueVars = hues
-          .map((tones, index) => {
-            const toneVars = tones.map(
-              ({ css }, tone) => `--colors_${index}_${tone}: ${css};`
-            );
-            if (index === 0) {
-              const primaryVars = tones.map(
-                (_, tone) =>
-                  `--colors_primary_${tone}: var(--colors_${index}_${tone});`
-              );
-              return [primaryVars, toneVars];
-            }
-            if (index === hues.length - 1) {
-              const secondaryVars = tones.map(
-                (_, tone) =>
-                  `--colors_secondary_${tone}: var(--colors_${index}_${tone});`
-              );
-              return [secondaryVars, toneVars];
-            }
-            return [toneVars];
-          }).flat();
-          const greyVars = greys.map(({css}, index) => `--colors_black_${index}: ${css};`);
-
-          return [...hueVars, ...greyVars].flat().join("\n")
-      },
-    ],
   }),
+  // connect(colorLogic),
+  // listeners(({ values }) => ({
+  //   setColorFormValue: async (_, breakpoint) => {
+  //     await breakpoint(50);
+  //     colorLogic.actions.setColors(
+  //       calculateColors(
+  //         values
+  //       )
+  //     );
+  //     colorLogic.actions.setGreys(
+  //       calculateGreys(
+  //         values
+  //       )
+  //     );
+  //     await breakpoint(50);
+  //   },
+  // })),
+  // afterMount(({ values }) => {
+  //   colorLogic.actions.setColors(
+  //     calculateColors(
+  //       values
+  //     )
+  //   );
+  //   colorLogic.actions.setGreys(
+  //     calculateGreys(
+  //       values
+  //     )
+  //   );
+  // }),
+  connectColorLogic({"greys": calculateGreys, "colors": calculateColors, listenerAction: "setColorFormValue"})
 ]);
+
+function calculateColors(
+  values: oklchFormLogicType["values"]
+): [...Color[]][] {
+  const {lightnessFormula, chromaFormula, tintCount, hues} = values;
+  const lightnessParser = parser();
+  try {
+    lightnessParser.evaluate(lightnessFormula);
+  } catch {
+    return [];
+  }
+
+  const chromaParser = parser();
+  try {
+    chromaParser.evaluate(chromaFormula);
+  } catch {
+    return [];
+  }
+
+  return hues.map((hue) =>
+    Array.from({ length: tintCount }, (__, tintIndex) => {
+      const values = {
+        hue,
+        chroma: round(chromaParser.evaluate(`f(${tintIndex},${tintCount})`)),
+        lightness: round(
+          lightnessParser.evaluate(`f(${tintIndex},${tintCount})`)
+        ),
+      };
+
+      return {
+        ...values,
+        css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
+      };
+    })
+  );
+}
+
+function calculateGreys(values: oklchFormLogicType["values"]) {
+  const {tintCount: tints, lightnessFormula: lightness, centerPoint: hue} = values
+  const lightnessParser = parser();
+  try {
+    lightnessParser.evaluate(lightness);
+  } catch {
+    return [];
+  }
+  const colors = Array.from({ length: tints }, (_, index) => {
+    const values = {
+      hue,
+      chroma: 0.017,
+      lightness: round(lightnessParser.evaluate(`f(${index},${tints})`)),
+    };
+
+    return {
+      ...values,
+      css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
+    };
+  });
+
+  return [
+    {
+      hue,
+      chroma: 0.01,
+      lightness: 99,
+      css: `oklch(99% 0.01 ${hue}deg)`,
+    },
+    ...colors,
+    {
+      hue,
+      chroma: 0.017,
+      lightness: 0,
+      css: `oklch(1% 0.017 ${hue}deg)`,
+    },
+  ];
+}
