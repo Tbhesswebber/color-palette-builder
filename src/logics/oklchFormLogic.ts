@@ -110,7 +110,7 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
         complementaryHueCount: count,
         complementaryHueGap: gap,
       }: ColorFormFields) => ({
-        gap: Number(gap) * (180 / (count - 1)),
+        gap: Number(gap) * (180 / (count)),
         count: Number(count),
       }),
     ],
@@ -130,6 +130,8 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
           count: Number(complementaryHues.count),
           gap: Number(complementaryHues.gap),
         });
+
+        console.log({hue, complementaryHueList})
 
         return [...analogousHueList, ...complementaryHueList];
       },
