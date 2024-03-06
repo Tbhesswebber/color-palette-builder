@@ -43,7 +43,7 @@ const defaultValues: Required<ColorFormFields> = {
 };
 
 export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
-  path(["src", "logics", "oklchFormLogic"]),
+  path(["src", "logics", "oklchImplicitFormLogic"]),
   forms({
     colorForm: {
       defaults: defaultValues as ColorFormFields,
