@@ -50,6 +50,7 @@ export function RangeInput({
   maxLabel,
   showBounds,
   step,
+  ...props
 }: Partial<ChildFunctionProps> & RangeInputProps) {
   const size = useContext(ResponsiveContext);
 
@@ -59,6 +60,7 @@ export function RangeInput({
       align="start"
       pad="small"
       gap={"small"}
+      fill
     >
       <Button
         className="button"
@@ -81,6 +83,7 @@ export function RangeInput({
           color="control"
           value={String(value)}
           onChange={({ target: { value } }) => onChange && onChange(value)}
+          {...props}
         />
         <Box direction="row" fill justify="between">
           {showBounds !== false && <Paragraph size="small">{minLabel ?? min}</Paragraph>}

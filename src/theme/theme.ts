@@ -1,7 +1,8 @@
-import { ThemeType } from "grommet";
+import { ThemeType as GrommetThemeType } from "grommet";
 import { Font } from "./constants";
+import { ExtendedThemeColors } from "./utils";
 
-export const customTheme: ThemeType = {
+export const customTheme = {
   global: {
     colors: {
       control: "primary",
@@ -62,4 +63,6 @@ export const customTheme: ThemeType = {
       color: "primary",
     },
   },
-};
+} as const satisfies GrommetThemeType;
+
+export type ThemeType = typeof customTheme & {global: {colors: ExtendedThemeColors}}; 
