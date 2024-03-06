@@ -27,6 +27,7 @@ const MenuButtonContainer = styled(Box)`
   bottom: 1rem;
   left: 1rem;
   overflow: hidden;
+  z-index: 1;
 
   transition: box-shadow 100ms ease-in-out;
   will-change: box-shadow;

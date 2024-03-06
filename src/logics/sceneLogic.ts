@@ -6,11 +6,13 @@ import React from "react";
 import type { sceneLogicType } from "./sceneLogicType";
 import { OklchFormulaic } from "../components/scenes/oklchFormulaic";
 import { routeMap, Scene } from "../router";
+import { OklchImplicit } from "../components/scenes/oklchImplicit";
 
 
 
 export const scenes: Record<Scene, () => React.ReactElement> = {
   oklchFormulaic: OklchFormulaic,
+  oklchImplicit: OklchImplicit,
 };
 
 export const sceneLogic = kea<sceneLogicType>([

@@ -131,8 +131,6 @@ export const oklchFormLogic = kea<oklchFormLogicType>([
           gap: Number(complementaryHues.gap),
         });
 
-        console.log({hue, complementaryHueList})
-
         return [...analogousHueList, ...complementaryHueList];
       },
     ],
