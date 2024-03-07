@@ -3,16 +3,9 @@ import React from "react";
 import { BezierCurveEditor } from "react-bezier-curve-editor";
 import { styled } from "styled-components";
 import { Box, BoxProps } from "grommet";
-import { props, themeColor } from "../../utils/styled";
+import { themeColor } from "../../utils/styled";
 
-interface ContainerProps extends BoxProps {
-  line: string;
-  secondaryLine: string;
-  background: string;
-  secondaryBackground: string;
-}
-
-const Container = styled(Box)<ContainerProps>`
+const Container = styled(Box)`
   min-width: fit-content;
 
   .BezierCurveEditor_handle.BezierCurveEditor_active {
@@ -21,22 +14,22 @@ const Container = styled(Box)<ContainerProps>`
       0 0 4px 4px currentColor;
   }
 
-  --bce-sizes-curve-handle: 16px;
+  --bce-sizes-curve-handle: 24px;
   --bce-padding-sm: 4px;
   --bce-padding-md: 8px;
   --bce-padding-lg: 12px;
   --bce-padding-xl: 16px;
-  --bce-colors-handle-line: ${props("secondaryLine")};
-  --bce-colors-curve-line: ${props("line")};
-  --bce-colors-row: ${props("secondaryBackground")};
-  --bce-colors-background: ${props("background")};
-  --bce-colors-outerarea: ${themeColor("black")};
-  --bce-colors-axisline: transparent;
-  --bce-colors-handle-fixed: ${props("line")};
+  --bce-colors-handle-line: ${themeColor("grey")};
+  --bce-colors-curve-line: ${themeColor("grey")};
+  --bce-colors-row: ${themeColor("lightGrey")};
+  --bce-colors-background: ${themeColor("background")};
+  --bce-colors-outerarea: ${themeColor("background")};
+  --bce-colors-axisline: ${themeColor("background")};
+  --bce-colors-handle-fixed: ${themeColor("grey")};
   --bce-colors-handle-start: ${themeColor("primary")};
   --bce-colors-handle-end: ${themeColor("secondary")};
-  --bce-colors-preview: white;
-  --bce-colors-preview-border: black;
+  --bce-colors-preview: ${themeColor("lightGrey")};
+  --bce-colors-preview-border: ${themeColor("darkGrey")};
   --bce-colors-handle-active-shadow: rgba(0, 0, 0, 0.25);
 `;
 
@@ -53,12 +46,8 @@ export const BezierCurve = React.forwardRef(function BezierCurveComponent({value
     <Container
       ref={ref}
       {...props}
-      background="transparent"
-      secondaryBackground="var(--colors_black_7)"
-      line="var(--colors_black_0)"
-      secondaryLine="var(--colors_black_1)"
     >
-      <BezierCurveEditor value={value} onChange={handleChange} size={200}/>
+      <BezierCurveEditor value={value} onChange={handleChange} size={200} />
     </Container>
   );
 })

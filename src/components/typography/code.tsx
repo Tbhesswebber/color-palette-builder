@@ -15,7 +15,7 @@ export function Code(props: BoxExtendedProps) {
       pad={{ horizontal: "0.2rem", vertical: "0.1rem" }}
       round="xxsmall"
       style={{ display: "inline-block", lineHeight: "1em" }}
-      background="grey"
+      background="lightGrey"
       margin={{ horizontal: "hair" }}
       {...props}
     />
