@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import { props } from "../utils/styled";
+import { props, themeColor } from "../utils/styled";
 
 export const GlobalStyles = createGlobalStyle<{vars: string}>`
     :root {
@@ -9,6 +9,7 @@ export const GlobalStyles = createGlobalStyle<{vars: string}>`
     html, body, #root {
         min-height: 100dvh;
         min-width: 100dvw;
+        background: ${themeColor("background")}
     }
 
     * {

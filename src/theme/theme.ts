@@ -9,6 +9,7 @@ export const customTheme = {
       error: "oklch(59.31% 0.1904 20.53)",
       white: "var(--colors_black_0)",
       text: { dark: "white", light: "black" },
+      background: { dark: "black", light: "white" },
       focus: "grey",
     },
     breakpoints: {

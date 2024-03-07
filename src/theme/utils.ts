@@ -8,7 +8,9 @@ export interface ExtendedThemeColors {
   hint: Color;
   primary: Color;
   secondary: Color;
+  lightGrey: Color;
   grey: Color;
+  darkGrey: Color;
 }
 
 export function applyColorsToTheme(
