@@ -7,7 +7,7 @@
     "compile": "tsc",
     "dev": "concurrently \"pnpm run dev:kea\" \"pnpm run dev:vite\" -n KEA,VITE -c green,magenta",
     "dev:kea": "kea-typegen watch --write-paths",
-    "dev:vite": "vite",
+    "dev:vite": "vite --host",
     "build": "vite build",
     "prettier": "prettier --write src",
     "preview": "vite preview",
