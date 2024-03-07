@@ -7,6 +7,7 @@ import { themeColor } from "../../utils/styled";
 
 const Container = styled(Box)`
   min-width: fit-content;
+  margin: 0 auto;
 
   .BezierCurveEditor_handle.BezierCurveEditor_active {
     box-shadow:

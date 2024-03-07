@@ -14,7 +14,8 @@ import { useMeasure } from "react-use";
 const CurveContainer = styled(Box)`
   flex-wrap: wrap;
   /* 24px at 650px screen width, 192px at 1300px screen width */
-  gap: clamp(24px, -9rem + 25.846153846153847vw, 192px);
+  column-gap: clamp(24px, -9rem + 25.846153846153847vw, 192px);
+  row-gap: 24px;
 `;
 
 const contentWidth = {
@@ -31,7 +32,7 @@ export function ColorForm() {
   const [containerRef, { height: containerHeight }] =
     useMeasure<HTMLDivElement>();
   const isHueWrapped = containerHeight - chromaHeight >= hueHeight;
-  const isLightnessWrapped = containerHeight - chromaHeight >= lightnessHeight;
+  const isLightnessWrapped = containerHeight - chromaHeight >= lightnessHeight + hueHeight;
 
   return (
     <Form logic={oklchImplicitFormLogic} formKey="colorForm" enableFormOnSubmit>
@@ -151,7 +152,7 @@ export function ColorForm() {
             stack
             width={contentWidth}
             flex="grow"
-            align={isHueWrapped ? "center" : "end"}
+            align={(isHueWrapped && isLightnessWrapped) ? "center" : "end"}
           >
             {({ value, onChange }) => (
               <BezierCurve
@@ -174,7 +175,8 @@ export function ColorForm() {
             }
             stack
             width={contentWidth}
-            align={isHueWrapped && !isLightnessWrapped ? "start" : "center"}
+            flex="grow"
+            align={(isLightnessWrapped) ? "center" : "start"}
           >
             {({ value, onChange }) => (
               <BezierCurve
