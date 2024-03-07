@@ -33,6 +33,7 @@ const StackingBox = styled(Box)`
   & label {
     grid-area: label;
     z-index: 1;
+    pointer-events: none;
   }
 
   & > :nth-child(n) {
@@ -41,6 +42,7 @@ const StackingBox = styled(Box)`
 
   & > :nth-child(n + 3) {
     z-index: 1;
+    pointer-events: none;
   }
 
   & > :nth-child(2) {
