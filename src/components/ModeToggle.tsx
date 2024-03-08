@@ -1,6 +1,7 @@
 import { Box, Button } from "grommet";
 import { Moon, Sun } from "grommet-icons";
 import React from "react";
+import { useMedia } from "react-use";
 import styled from "styled-components";
 
 interface ModeToggleProps {
@@ -51,14 +52,25 @@ export function ModeToggle({ mode, toggle }: ModeToggleProps) {
   );
 }
 
-export function useModeToggle(
-  init: "light" | "dark" | "system"
-): ["light" | "dark" | "system", () => void] {
+export function useModeToggle(): ["light" | "dark", () => void] {
   const [mode, toggle] = React.useReducer(
-    (prevState): "light" | "dark" | "system" => {
+    (prevState): "light" | "dark" => {
       return prevState === "light" ? "dark" : "light";
     },
-    init
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
   );
+
+  React.useEffect(() => {
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", toggle);
+
+    return () => {
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", toggle);
+    };
+  }, []);
+
   return [mode, toggle];
 }

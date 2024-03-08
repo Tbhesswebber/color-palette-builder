@@ -7,9 +7,10 @@ export const customTheme = {
     colors: {
       control: "primary",
       error: "oklch(59.31% 0.1904 20.53)",
-      white: "var(--colors_black_0)",
-      text: { dark: "white", light: "black" },
-      background: { dark: "black", light: "white" },
+      white: "var(--colors_white)",
+      black: "var(--colors_black)",
+      text: { dark: "var(--colors_white)", light: "var(--colors_black)" },
+      background: { dark: "var(--colors_black)", light: "var(--colors_white)" },
       focus: "grey",
     },
     breakpoints: {

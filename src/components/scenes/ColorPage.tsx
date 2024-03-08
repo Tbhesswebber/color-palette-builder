@@ -11,7 +11,6 @@ export function ColorPage({ children }: PropsWithChildren): JSX.Element {
   const theme = React.useMemo(() => {
     return applyColorsToTheme({
       // there are two extra shades in the grey scale for white and black
-      black: `var(--colors_black_${tintCount + 2 - 1})`,
       hint: {
         dark: `var(--colors_secondary_${
           Math.round(tintCount / 2) - Math.floor(tintCount / 4)

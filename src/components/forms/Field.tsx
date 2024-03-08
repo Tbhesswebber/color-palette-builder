@@ -77,7 +77,7 @@ export function Field(props: FieldProps) {
         return (
           <Box {...boxProps} fill={!boxProps.width} gridArea={area}>
             <StackingBox fill={!boxProps.width}>
-              <Label level={4} fill htmlFor={inputId}>
+              <Label level={4} htmlFor={inputId}>
                 {label}
               </Label>
               {kids as React.ReactNode}

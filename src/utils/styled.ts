@@ -24,12 +24,14 @@ export function themeColor(
   color: keyof Required<ThemeType["global"]>["colors"]
 ): (props: { theme: DefaultTheme }) => string {
   return ({ theme }) => {
+    const isDarkMode = "dark" in theme && theme["dark"];
     const colorValue = theme.global.colors[color];
     let retrievedValue: string;
+
     if (typeof colorValue === "string") {
       retrievedValue = colorValue;
     } else {
-      retrievedValue = colorValue["dark" in theme && theme["dark"] ? "dark" : "light"];
+      retrievedValue = colorValue[isDarkMode ? "dark" : "light"];
     }
 
     if (retrievedValue in theme.global.colors) {
