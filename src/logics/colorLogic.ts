@@ -66,7 +66,14 @@ export const colorLogic = kea<colorLogicType>([
           ({ css }, index) => `--colors_black_${index}: ${css};`
         );
 
-        return [...hueVars, ...greyVars].flat().join("\n");
+        return [
+          ...hueVars,
+          `--colors_white: ${greys.at(0)?.css};`,
+          `--colors_black: ${greys.at(-1)?.css};`,
+          ...greyVars,
+        ]
+          .flat()
+          .join("\n");
       },
     ],
   }),

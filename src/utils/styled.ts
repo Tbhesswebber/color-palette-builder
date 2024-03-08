@@ -11,7 +11,7 @@ export function props<T, K extends keyof T = keyof T>(
 export function themeMode<T, K = T>(
   lightValue: T,
   darkValue: K
-): (props: { theme: ThemeType }) => T | K {
+): (props: { theme: DefaultTheme }) => T | K {
   return ({ theme }) => {
     if ("dark" in theme && theme["dark"]) {
       return darkValue;
@@ -24,10 +24,21 @@ export function themeColor(
   color: keyof Required<ThemeType["global"]>["colors"]
 ): (props: { theme: DefaultTheme }) => string {
   return ({ theme }) => {
+    const isDarkMode = "dark" in theme && theme["dark"];
     const colorValue = theme.global.colors[color];
+    let retrievedValue: string;
+
     if (typeof colorValue === "string") {
-      return colorValue;
+      retrievedValue = colorValue;
+    } else {
+      retrievedValue = colorValue[isDarkMode ? "dark" : "light"];
     }
-    return colorValue["dark" in theme && theme["dark"] ? "dark" : "light"];
+
+    if (retrievedValue in theme.global.colors) {
+      return themeColor(
+        retrievedValue as keyof Required<ThemeType["global"]>["colors"]
+      )({ theme });
+    }
+    return retrievedValue;
   };
 }

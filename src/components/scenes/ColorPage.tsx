@@ -5,13 +5,12 @@ import React, { PropsWithChildren } from "react";
 import { Layout } from "../Layout";
 import { useColorLogicValues } from "../../logics/colorLogic";
 
-export function ColorPage({children}: PropsWithChildren): JSX.Element {
+export function ColorPage({ children }: PropsWithChildren): JSX.Element {
   const { greys, colors, cssVars, tintCount } = useColorLogicValues();
 
   const theme = React.useMemo(() => {
     return applyColorsToTheme({
       // there are two extra shades in the grey scale for white and black
-      black: `var(--colors_black_${tintCount + 2 - 1})`,
       hint: {
         dark: `var(--colors_secondary_${
           Math.round(tintCount / 2) - Math.floor(tintCount / 4)
@@ -24,13 +23,23 @@ export function ColorPage({children}: PropsWithChildren): JSX.Element {
       secondary: `var(--colors_secondary_${
         Math.floor(tintCount / 2 + 0.25) - 1
       })`,
-      grey: {
-        light: `var(--colors_black_${
-          Math.round(tintCount / 2) - Math.floor(tintCount / 3) - 1
-        })`,
+      lightGrey: {
+        light: `var(--colors_black_${Math.round((tintCount + 2) / 4) - 1})`,
         dark: `var(--colors_black_${
-          Math.round(tintCount / 2) + Math.floor(tintCount / 3) + 1
+          Math.round(((tintCount + 2) / 4) * 3) + 1
         })`,
+      },
+      grey: {
+        light: `var(--colors_black_${Math.round((tintCount + 2) / 2) - 2})`,
+        dark: `var(--colors_black_${Math.round((tintCount + 2) / 2) + 2})`,
+      },
+      darkGrey: {
+        light: `var(--colors_black_${Math.round(
+          (tintCount + 2) * (3 / 4) - 1
+        )})`,
+        dark: `var(--colors_black_${Math.round(
+          (tintCount + 2) * (1 / 4) - 1
+        )})`,
       },
     });
   }, [tintCount]);

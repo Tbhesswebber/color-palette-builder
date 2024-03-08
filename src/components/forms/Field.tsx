@@ -33,6 +33,7 @@ const StackingBox = styled(Box)`
   & label {
     grid-area: label;
     z-index: 1;
+    pointer-events: none;
   }
 
   & > :nth-child(n) {
@@ -41,6 +42,7 @@ const StackingBox = styled(Box)`
 
   & > :nth-child(n + 3) {
     z-index: 1;
+    pointer-events: none;
   }
 
   & > :nth-child(2) {
@@ -75,7 +77,7 @@ export function Field(props: FieldProps) {
         return (
           <Box {...boxProps} fill={!boxProps.width} gridArea={area}>
             <StackingBox fill={!boxProps.width}>
-              <Label level={4} fill htmlFor={inputId}>
+              <Label level={4} htmlFor={inputId}>
                 {label}
               </Label>
               {kids as React.ReactNode}

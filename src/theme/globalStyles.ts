@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import { props } from "../utils/styled";
+import { props, themeColor } from "../utils/styled";
 
 export const GlobalStyles = createGlobalStyle<{vars: string}>`
     :root {

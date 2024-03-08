@@ -18,7 +18,7 @@ const AppWrapper = styled(Box)`
 `;
 
 export function Layout({theme, cssVars, children}: LayoutProps) {
-      const [mode, toggle] = useModeToggle("system");
+    const [mode, toggle] = useModeToggle();
       
     return (<Grommet
         full
@@ -27,7 +27,7 @@ export function Layout({theme, cssVars, children}: LayoutProps) {
           drop: { checkContainingBlock: true },
         }}
         theme={theme}
-        themeMode={mode === "system" ? "auto" : mode}
+        themeMode={mode}
       >
         <GlobalStyles vars={cssVars} />
         <AppWrapper

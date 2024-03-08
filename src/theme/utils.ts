@@ -4,11 +4,12 @@ import { customTheme } from "./theme";
 
 type Color = string | {dark: string, light: string}
 export interface ExtendedThemeColors {
-  black: Color;
   hint: Color;
   primary: Color;
   secondary: Color;
+  lightGrey: Color;
   grey: Color;
+  darkGrey: Color;
 }
 
 export function applyColorsToTheme(
