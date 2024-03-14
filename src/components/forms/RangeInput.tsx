@@ -9,6 +9,8 @@ import {
   RangeInput as GRangeInput,
   Paragraph,
   ResponsiveContext,
+  Stack,
+  Meter,
 } from "grommet";
 import { Subtract, Add } from "grommet-icons";
 import { InputProps } from "./types";
@@ -75,19 +77,21 @@ export function RangeInput({
         hoverIndicator={{ elevation: "small", background: {} }}
       />
       <Box align="center" width="small" flex direction="column">
-        <GRangeInput
-          a11yTitle="Select range value"
-          min={min}
-          max={max}
-          step={Number(step)}
-          color="control"
-          value={String(value)}
-          onChange={({ target: { value } }) => onChange && onChange(value)}
-          {...props}
-        />
+        <Stack>
+          <Meter round thickness="xsmall" aria-hidden="true" />
+          <GRangeInput
+            a11yTitle="Select range value"
+            min={min}
+            max={max}
+            step={Number(step)}
+            value={String(value)}
+            onChange={({ target: { value } }) => onChange && onChange(value)}
+            {...props}
+          />
+        </Stack>
         <Box direction="row" fill justify="between">
-          {showBounds !== false && <Paragraph size="small">{minLabel ?? min}</Paragraph>}
-          {showBounds !== false && <Paragraph size="small">{maxLabel ?? max}</Paragraph>}
+          {showBounds !== false && <Paragraph margin={"0"} size="small">{minLabel ?? min}</Paragraph>}
+          {showBounds !== false && <Paragraph margin={"0"} size="small">{maxLabel ?? max}</Paragraph>}
         </Box>
       </Box>
       <Button

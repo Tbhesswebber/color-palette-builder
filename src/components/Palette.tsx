@@ -16,25 +16,27 @@ const PaletteWrapper = styled(Box)`
 
 const Swatch = styled(Box)`
   code {
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+    // approximate light or dark text based on background
     background: inherit;
     color: transparent;
     background-clip: text;
     font-weight: bold;
     font-size: clamp(10px, calc(10cqw - 3px), 24px);
-    filter: invert(0%) grayscale(0%) invert(0%) contrast(100%) invert(0%);
-    filter: grayscale(0%) invert(0%) contrast(100%);
     filter: invert(100%) grayscale(100%) contrast(9000%);
+
     display: none;
     opacity: 0;
-    will-change: opacity;
+    will-change: opacity, display;
     transition: opacity 700ms ease-in-out;
   }
-  
-  &:hover code,
-  &:focus code {
-    display: revert;
+
+  &:hover code {
+    display: block;
     opacity: 1;
-    transition: opacity 75ms ease-in-out;
+    transition: opacity 705ms ease-in-out;
   }
 
   @container swatch (max-width: 100px) {
@@ -54,6 +56,7 @@ export function Palette({ count, prefix }: PaletteProps) {
           <Swatch
             key={color}
             flex="grow"
+            basis="0%"
             background={color}
             color={color}
             align="center"
@@ -69,7 +72,7 @@ export function Palette({ count, prefix }: PaletteProps) {
   );
 
   return (
-    <PaletteWrapper fill flex gap="xsmall">
+    <PaletteWrapper flex="grow" direction="column" gap="xsmall">
       {colors}
     </PaletteWrapper>
   );

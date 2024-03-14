@@ -20,13 +20,17 @@ const Container = styled(Box)`
   --bce-padding-md: 8px;
   --bce-padding-lg: 12px;
   --bce-padding-xl: 16px;
-  --bce-colors-handle-line: ${themeColor("grey")};
-  --bce-colors-curve-line: ${themeColor("grey")};
-  --bce-colors-row: ${themeColor("lightGrey")};
-  --bce-colors-background: ${themeColor("background")};
+  --bce-colors-handle-line: ${themeColor("text")};
+  --bce-colors-curve-line: ${themeColor("text")};
+  --bce-colors-row: color-mix(in oklab, ${themeColor("grey")}, transparent 75%);
+  --bce-colors-background: color-mix(
+    in oklab,
+    ${themeColor("darkGrey")},
+    transparent 75%
+  );
   --bce-colors-outerarea: ${themeColor("background")};
   --bce-colors-axisline: ${themeColor("background")};
-  --bce-colors-handle-fixed: ${themeColor("grey")};
+  --bce-colors-handle-fixed: ${themeColor("text")};
   --bce-colors-handle-start: ${themeColor("primary")};
   --bce-colors-handle-end: ${themeColor("secondary")};
   --bce-colors-preview: ${themeColor("lightGrey")};

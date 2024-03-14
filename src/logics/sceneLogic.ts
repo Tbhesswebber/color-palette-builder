@@ -7,12 +7,14 @@ import type { sceneLogicType } from "./sceneLogicType";
 import { OklchFormulaic } from "../components/scenes/oklchFormulaic";
 import { routeMap, Scene } from "../router";
 import { OklchImplicit } from "../components/scenes/oklchImplicit";
+import { Home } from "../components/scenes/home";
 
 
 
 export const scenes: Record<Scene, () => React.ReactElement> = {
   oklchFormulaic: OklchFormulaic,
   oklchImplicit: OklchImplicit,
+  home: Home
 };
 
 export const sceneLogic = kea<sceneLogicType>([
@@ -45,7 +47,6 @@ export const sceneLogic = kea<sceneLogicType>([
     );
 
     return {
-      "/": () => router.actions.replace("/oklch/formulaic" satisfies keyof typeof routeMap),
       ...computedScenes,
     };
   }),

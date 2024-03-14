@@ -111,7 +111,7 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
         analogousHueCount: count,
         analogousHueGap: gap,
       }: ColorFormFields) => ({
-        gap: Number(gap) * (180 / (count - 1)),
+        gap: Number(gap) * (180 / Math.max((count - 1), 1)),
         count: Number(count),
       }),
     ],

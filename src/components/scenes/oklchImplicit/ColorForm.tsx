@@ -1,6 +1,6 @@
 import { FieldProps, Form } from "kea-forms";
 import React from "react";
-import { Box, Grid, ResponsiveContext } from "grommet";
+import { Box, Grid, ResponsiveContext, Tab, Tabs, TextInput } from "grommet";
 import { Field } from "../../forms/Field";
 import { RangeInput } from "../../forms/RangeInput";
 import { FormulaInput } from "../../forms/FormulaInput";
@@ -10,11 +10,12 @@ import { BezierCurve } from "../../forms/BezierCurve";
 import { oklchImplicitFormLogic } from "../../../logics/oklchImplicitLogic";
 import { styled } from "styled-components";
 import { useMeasure } from "react-use";
+import { VisuallyHidden } from "../../a11y/VisuallyHidden";
 
 const CurveContainer = styled(Box)`
   flex-wrap: wrap;
   /* 24px at 650px screen width, 192px at 1300px screen width */
-  column-gap: clamp(24px, -9rem + 25.846153846153847vw, 192px);
+  column-gap: clamp(24px, -9rem + 25.846153846153847vw, 96px);
   row-gap: 24px;
 `;
 
@@ -31,33 +32,37 @@ export function ColorForm() {
   const [hueRef, { height: hueHeight }] = useMeasure<HTMLDivElement>();
   const [containerRef, { height: containerHeight }] =
     useMeasure<HTMLDivElement>();
-  const isHueWrapped = containerHeight - chromaHeight >= hueHeight;
-  const isLightnessWrapped = containerHeight - chromaHeight >= lightnessHeight + hueHeight;
 
   return (
     <Form logic={oklchImplicitFormLogic} formKey="colorForm" enableFormOnSubmit>
-      <Box direction="column" flex gap="medium">
+      <Box direction="row" flex gap="medium" align="center" justify="center">
         <Grid
           columns={rangeGrid.columns}
           rows={rangeGrid.rows}
           areas={rangeGrid.areas}
+          gap="medium"
         >
           <Field
             name={ControlGridArea.TintCount}
             label="Colors Per Hue"
             area={rangeGrid.areas ? ControlGridArea.TintCount : undefined}
           >
-            <RangeInput
-              min="5"
-              max="15"
-              name="tintCount"
-              id="tintCount"
-              step="1"
-            ></RangeInput>
+            {({ value, onChangeEvent: onChange }) => (
+              <TextInput
+                type="number"
+                min="5"
+                max="15"
+                name="tintCount"
+                id="tintCount"
+                step="1"
+                value={value}
+                onChange={onChange}
+              ></TextInput>
+            )}
           </Field>
           <Field
             name={ControlGridArea.CenterPoint}
-            label="Origin"
+            label="Primary Hue"
             area={rangeGrid.areas ? ControlGridArea.CenterPoint : undefined}
           >
             <RangeInput
@@ -76,18 +81,23 @@ export function ColorForm() {
               rangeGrid.areas ? ControlGridArea.AnalogousHueCount : undefined
             }
           >
-            <RangeInput
-              min="0"
-              max="10"
-              step="1"
-              name="analogousHueCount"
-              id="analogousHueCount"
-            ></RangeInput>
+            {({ value, onChangeEvent: onChange }) => (
+              <TextInput
+                type="number"
+                min="0"
+                max="10"
+                step="1"
+                name="analogousHueCount"
+                id="analogousHueCount"
+                value={value}
+                onChange={onChange}
+              ></TextInput>
+            )}
           </Field>
 
           <Field
             name={ControlGridArea.AnalogousHueGap}
-            label="Analogous Hue Spacing"
+            label="Analogous Hue Difference"
             area={rangeGrid.areas ? ControlGridArea.AnalogousHueGap : undefined}
           >
             <RangeInput
@@ -110,18 +120,23 @@ export function ColorForm() {
                 : undefined
             }
           >
-            <RangeInput
-              min="0"
-              max="10"
-              step="1"
-              name={ControlGridArea.ComplementaryHueCount}
-              id={ControlGridArea.ComplementaryHueCount}
-            ></RangeInput>
+            {({ value, onChangeEvent: onChange }) => (
+              <TextInput
+                type="number"
+                min="0"
+                max="10"
+                step="1"
+                name={ControlGridArea.ComplementaryHueCount}
+                id={ControlGridArea.ComplementaryHueCount}
+                value={value}
+                onChange={onChange}
+              ></TextInput>
+            )}
           </Field>
 
           <Field
             name={ControlGridArea.ComplementaryHueGap}
-            label="Complementary Hue Spacing"
+            label="Complementary Hue Difference"
             area={
               rangeGrid.areas ? ControlGridArea.ComplementaryHueGap : undefined
             }
@@ -139,73 +154,85 @@ export function ColorForm() {
         </Grid>
 
         <CurveContainer ref={containerRef} direction={"row"}>
-          <Field
-            name={"chromaFormula"}
-            label="Chroma Shift"
-            hint={
-              <>
-                The <Code>x</Code>-axis represents the tint progression
-                <br />
-                The <Code>y</Code>-axis represents the chroma
-              </>
-            }
-            stack
-            width={contentWidth}
-            flex="grow"
-            align={(isHueWrapped && isLightnessWrapped) ? "center" : "end"}
-          >
-            {({ value, onChange }) => (
-              <BezierCurve
-                value={value}
-                handleChange={onChange}
-                ref={chromaRef}
-              />
-            )}
-          </Field>
+          <Tabs>
+            <Tab title="Chroma">
+              <Field
+                name={"chromaFormula"}
+                label={<VisuallyHidden>Chroma Shift</VisuallyHidden>}
+                hint={
+                  <>
+                    The <Code>x</Code>-axis represents the tint progression
+                    <br />
+                    The <Code>y</Code>-axis represents the chroma
+                  </>
+                }
+                stack
+                width={contentWidth}
+                flex="grow"
+                align={"center"}
+              >
+                {({ value, onChange }) => (
+                  <BezierCurve
+                    value={value}
+                    handleChange={onChange}
+                    ref={chromaRef}
+                  />
+                )}
+              </Field>
+            </Tab>
 
-          <Field
-            name={"lightnessFormula"}
-            label="Lightness Shift"
-            hint={
-              <>
-                The <Code>x</Code>-axis represents the tint progression
-                <br />
-                The <Code>y</Code>-axis represents the lightness
-              </>
-            }
-            stack
-            width={contentWidth}
-            flex="grow"
-            align={(isLightnessWrapped) ? "center" : "start"}
-          >
-            {({ value, onChange }) => (
-              <BezierCurve
-                ref={lightnessRef}
-                value={value}
-                handleChange={onChange}
-              />
-            )}
-          </Field>
+            <Tab title="Lightness">
+              <Field
+                name={"lightnessFormula"}
+                label={<VisuallyHidden>Lightness Shift</VisuallyHidden>}
+                hint={
+                  <>
+                    The <Code>x</Code>-axis represents the tint progression
+                    <br />
+                    The <Code>y</Code>-axis represents the lightness
+                  </>
+                }
+                stack
+                width={contentWidth}
+                flex="grow"
+                align={"center"}
+              >
+                {({ value, onChange }) => (
+                  <BezierCurve
+                    ref={lightnessRef}
+                    value={value}
+                    handleChange={onChange}
+                  />
+                )}
+              </Field>
+            </Tab>
 
-          <Field
-            name={"hueFormula"}
-            label="Hue Shift"
-            hint={
-              <>
-                The <Code>x</Code>-axis represents the tint progression
-                <br />
-                The <Code>y</Code>-axis represents the hue
-              </>
-            }
-            stack
-            width={contentWidth}
-            flex="grow"
-            align={isHueWrapped ? "center" : "start"}
-          >
-            {({ value, onChange }) => (
-              <BezierCurve value={value} handleChange={onChange} ref={hueRef} />
-            )}
-          </Field>
+            <Tab title="Hue">
+              <Field
+                name={"hueFormula"}
+                label={<VisuallyHidden>Hue Shift</VisuallyHidden>}
+                hint={
+                  <>
+                    The <Code>x</Code>-axis represents the tint progression
+                    <br />
+                    The <Code>y</Code>-axis represents the hue
+                  </>
+                }
+                stack
+                width={contentWidth}
+                flex="grow"
+                align={"center"}
+              >
+                {({ value, onChange }) => (
+                  <BezierCurve
+                    value={value}
+                    handleChange={onChange}
+                    ref={hueRef}
+                  />
+                )}
+              </Field>
+            </Tab>
+          </Tabs>
         </CurveContainer>
       </Box>
     </Form>
