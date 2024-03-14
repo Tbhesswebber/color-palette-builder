@@ -8,7 +8,7 @@ export const GlobalStyles = createGlobalStyle<{vars: string}>`
 
     html, body, #root {
         min-height: 100dvh;
-        min-width: 100dvw;
+        width: 100dvw;
     }
 
     * {

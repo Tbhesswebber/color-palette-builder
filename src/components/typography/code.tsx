@@ -1,22 +1,24 @@
-import { Box, BoxExtendedProps, ThemeContext } from "grommet";
+import { Box, BoxExtendedProps, Text, TextExtendedProps, ThemeContext } from "grommet";
 import React from "react";
 import { styled } from "styled-components";
 import { Font } from "../../theme/constants";
-import { themeMode } from "../../utils/styled";
+import { edgeSize, themeColor, themeMode } from "../../utils/styled";
 
-const CodeElement = styled(Box).attrs({ forwardedAs: "code" })`
-  font-family: ${Font.Mono};
+const CodeElement = styled(Text).attrs({ forwardedAs: "code" })`
+  margin: 0 ${edgeSize("hair")};
+  padding: 0 0.2em;
+
+  background-color: ${themeColor("lightGrey")};
+
+  border-radius: ${edgeSize("xxsmall")};
+
   color: color-mix(in oklch, currentColor, ${themeMode("black", "white")} 25%);
+  font-family: ${Font.Mono};
 `;
 
-export function Code(props: BoxExtendedProps) {
+export function Code(props: TextExtendedProps) {
   return (
     <CodeElement
-      pad={{ horizontal: "0.2rem", vertical: "0.1rem" }}
-      round="xxsmall"
-      style={{ display: "inline-block", lineHeight: "1em" }}
-      background="lightGrey"
-      margin={{ horizontal: "hair" }}
       {...props}
     />
   );

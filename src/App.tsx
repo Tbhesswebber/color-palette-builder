@@ -1,11 +1,15 @@
 import { StyleSheetManager } from "styled-components";
 import isPropValid from "@emotion/is-prop-valid";
 import { Scenes } from "./components/scenes/Scene";
+import { Layout } from "./components/layouts/Layout";
 
 export function App() {
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <Layout>
+
       <Scenes />
+      </Layout>
     </StyleSheetManager>
   );
 }

@@ -42,3 +42,7 @@ export function themeColor(
     return retrievedValue;
   };
 }
+
+export function edgeSize(size: keyof Required<ThemeType["global"]>["edgeSize"]): (props: { theme: DefaultTheme }) => string {
+  return ({theme}) => theme.global.edgeSize ? theme.global.edgeSize[size] ?? "" : "";
+}

@@ -24,16 +24,9 @@ const mediumGridAreas = [
   [ControlGridArea.ComplementaryHueCount, ControlGridArea.ComplementaryHueGap],
 ];
 const largeGridAreas = [
-  [
-    ControlGridArea.TintCount,
-    ControlGridArea.AnalogousHueCount,
-    ControlGridArea.ComplementaryHueCount,
-  ],
-  [
-    ControlGridArea.CenterPoint,
-    ControlGridArea.AnalogousHueGap,
-    ControlGridArea.ComplementaryHueGap,
-  ],
+  [ControlGridArea.TintCount, ControlGridArea.CenterPoint],
+  [ControlGridArea.AnalogousHueCount, ControlGridArea.AnalogousHueGap],
+  [ControlGridArea.ComplementaryHueCount, ControlGridArea.ComplementaryHueGap],
 ];
 
 export function useRangeGrid() {
@@ -55,7 +48,7 @@ export function useRangeGrid() {
       };
     }
     return {
-      columns: ["1fr", "1fr", "1fr"],
+      columns: ["1fr", "1fr"],
       rows: ["fit-content"],
       areas: largeGridAreas,
     };

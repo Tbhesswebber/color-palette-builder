@@ -1,19 +1,31 @@
 import { grommet } from "grommet";
-import { ColorType, deepMerge } from "grommet/utils";
+import { deepMerge } from "grommet/utils";
 import { customTheme } from "./theme";
 
-type Color = string | {dark: string, light: string}
-export interface ExtendedThemeColors {
-  hint: Color;
-  primary: Color;
-  secondary: Color;
-  lightGrey: Color;
-  grey: Color;
-  darkGrey: Color;
-}
+export type ThemeMode<T> = {dark: T, light: T}
+type Color = string | ThemeMode<string>;
 
-export function applyColorsToTheme(
-  colors: ExtendedThemeColors
-) {
+type ExtendedThemeColorName =
+  | "hint"
+  | "primary"
+  | "secondary"
+  | "lightGrey"
+  | "grey"
+  | "darkGrey"
+  | "success"
+  | "successDark"
+  | "successLight"
+  | "warning"
+  | "warningDark"
+  | "warningLight"
+  | "error"
+  | "errorDark"
+  | "errorLight"
+  | "info"
+  | "infoDark"
+  | "infoLight";
+export type ExtendedThemeColors = Record<ExtendedThemeColorName, Color>;
+
+export function applyColorsToTheme(colors: ExtendedThemeColors) {
   return deepMerge(grommet, customTheme, { global: { colors } });
 }

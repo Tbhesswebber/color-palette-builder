@@ -1,9 +1,6 @@
-import { ThemeType } from "grommet";
+import {ThemeType} from "../../theme/theme";
 
 declare module "styled-components" {
     interface DefaultTheme extends ThemeType {
-        global: {
-            colors: Record<string, string| {dark: string, light: string}>
-        }
     }
 }
