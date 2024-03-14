@@ -1,4 +1,4 @@
-import { actions, kea, path, reducers, useValues } from "kea";
+import { actions, kea, path, reducers, useActions, useValues } from "kea";
 import { router, urlToAction } from "kea-router";
 
 import React from "react";
@@ -8,13 +8,15 @@ import { OklchFormulaic } from "../components/scenes/oklchFormulaic";
 import { routeMap, Scene } from "../router";
 import { OklchImplicit } from "../components/scenes/oklchImplicit";
 import { Home } from "../components/scenes/home";
+import { FluidCalculator } from "../components/scenes/fluidCalculator";
 
 
 
 export const scenes: Record<Scene, () => React.ReactElement> = {
   oklchFormulaic: OklchFormulaic,
   oklchImplicit: OklchImplicit,
-  home: Home
+  home: Home, 
+  fluid: FluidCalculator
 };
 
 export const sceneLogic = kea<sceneLogicType>([
@@ -27,7 +29,7 @@ export const sceneLogic = kea<sceneLogicType>([
   }),
   reducers({
     scene: [
-      "oklchFormulaic" as Scene,
+      "home" as Scene,
       {
         setScene: (_, payload) => payload.scene,
       },
@@ -54,4 +56,12 @@ export const sceneLogic = kea<sceneLogicType>([
 
 export function useSceneValues() {
   return useValues(sceneLogic);
+}
+
+export function useRouterValues() {
+  return useValues(router);
+}
+
+export function useRouterActions() {
+  return useActions(router);
 }

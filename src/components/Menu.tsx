@@ -11,6 +11,7 @@ import React from "react";
 import { themeColor } from "../utils/styled";
 import { useToggle } from "react-use";
 import { Anchor } from "./general/anchor";
+import { Button } from "./general/button";
 
 interface MenuProps
   extends Omit<DropButtonExtendedProps, "dropContent" | "dropProps"> {
@@ -22,7 +23,26 @@ const ListItem = styled.li`
   text-transform: capitalize;
 `;
 
-const MenuButton = styled(DropButton)`
+const MenuButtonTrigger = styled(DropButton)`
+  border-bottom: solid 1px transparent;
+
+  &&:hover:not(:disabled),
+  &&:active:not(:disabled),
+  &&:focus-visible:not(:disabled) {
+    border-bottom: solid 1px ${themeColor("primary")};
+  }
+
+  /* unsetting button stuff */
+  box-shadow: none;
+  border-radius: 0%;
+  &&:hover,
+  &&:active,
+  &&:focus {
+    box-shadow: none;
+  }
+`;
+
+const MenuButton = styled(Button)`
   border-bottom: solid 1px transparent;
 
   &&:hover:not(:disabled),
@@ -83,11 +103,11 @@ export function Menu({ label, items, ...props }: MenuProps) {
   }
 
   if (items.length === 1 && !Array.isArray(items[0]) && !props.disabled) {
-    return <Anchor href={items[0].href}>{items[0].label ?? label}</Anchor>;
+    return <MenuButton href={items[0].href}>{items[0].label ?? label}</MenuButton>;
   }
 
   return (
-    <MenuButton
+    <MenuButtonTrigger
       ref={buttonRef}
       a11yTitle={`${label} menu`}
       {...props}
