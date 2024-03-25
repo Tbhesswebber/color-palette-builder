@@ -26,7 +26,7 @@ const ListItem = styled.li`
 const menuButtonStyles = css<DropButtonExtendedProps | ButtonExtendedProps>`
   padding: 4px 22px;
   border-bottom: solid 1px transparent;
-  color: ${themeColor("white")};
+  color: ${themeColor("text")};
   background-color: inherit;
   
   &[data-active=true] {
