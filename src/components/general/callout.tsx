@@ -19,6 +19,7 @@ import React from "react";
 import { styled } from "styled-components";
 import { TShirtSize } from "../../theme/constants";
 import { props, themeColor } from "../../utils/styled";
+import { Anchor } from "./anchor";
 
 export interface CalloutProps extends BoxExtendedProps {
   type: "error" | "success" | "info" | "warning";
@@ -90,6 +91,9 @@ export function Callout({
         component: Paragraph,
         props: { fill: true, margin: paragraphMargin, size },
       },
+      a: {
+        component: Anchor
+      }
     }),
     [size]
   );

@@ -1,4 +1,5 @@
 import { DefaultTheme } from "styled-components";
+import { TShirtSize, TShirtSizeExtended } from "../theme/constants";
 import { ThemeType } from "../theme/theme";
 
 export function props<T, K extends keyof T = keyof T>(
@@ -24,7 +25,8 @@ export function themeColor(
   color: keyof Required<ThemeType["global"]>["colors"]
 ): (props: { theme: DefaultTheme }) => string {
   return ({ theme }) => {
-    const isDarkMode = "dark" in theme && theme["dark"];
+    if (!theme) return "";
+    const isDarkMode = !!theme["dark"];
     const colorValue = theme.global.colors[color];
     let retrievedValue: string;
 
@@ -43,6 +45,13 @@ export function themeColor(
   };
 }
 
-export function edgeSize(size: keyof Required<ThemeType["global"]>["edgeSize"]): (props: { theme: DefaultTheme }) => string {
-  return ({theme}) => theme.global.edgeSize ? theme.global.edgeSize[size] ?? "" : "";
-}
+export function themeEdgeSize(
+  size: keyof Required<ThemeType["global"]>["edgeSize"],
+  defaultValue: string = ""
+): (props: { theme: DefaultTheme }) => string {
+  return ({ theme }) =>{
+    const value = theme.global.edgeSize
+      ? theme.global.edgeSize[size] ?? defaultValue
+      : defaultValue;
+    return value;
+}}

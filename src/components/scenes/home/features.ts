@@ -1,3 +1,4 @@
+import { Routes } from "../../../router";
 import { CalloutProps } from "../../general/callout";
 
 export interface Feature {
@@ -5,6 +6,7 @@ export interface Feature {
   status: "Not Started" | "In Progress" | "Complete";
   description: string;
   callouts?: CalloutProps[];
+  link?: Routes;
 }
 
 export const features: Feature[] = [
@@ -16,9 +18,18 @@ export const features: Feature[] = [
   },
   {
     name: "Fluid Design Calculator",
-    status: "Not Started",
+    status: "In Progress",
+    link: Routes.FluidDesign,
     description:
-      "Extract css values that allow margins, gaps, typography, etc. to grow and shrink with viewport sizes with customizable maximums and minimums.",
+      "Extract css values that allow margins, gaps, typography, etc. to grow and shrink with viewport and container sizes with customizable maximums and minimums.",
+    callouts: [
+      {
+        type: "info",
+        size: "small",
+        title: "Inspiration",
+        children: `I first learned about the \`clamp\` strategy of fluid design from Josh Comeau's course [CSS for JS Devs](https://css-for-js.dev/).  While working on this project, I discovered [Utopia](https://utopia.fyi), which is a bit more fully fledged than this, but doesn't have container support.`,
+      },
+    ],
   },
   {
     name: "Drop Shadow Calculator",
@@ -29,6 +40,7 @@ export const features: Feature[] = [
   {
     name: "Oklch Palette Builder",
     status: "In Progress",
+    link: Routes.OklchImplicit,
     description: `Use intuitive inputs to create a customized color palette using perceived lightness, chroma (think color intensity), and hue. You can also curate how each value changes for each tint from lightest to darkest.`,
     callouts: [
       {
@@ -43,7 +55,9 @@ export const features: Feature[] = [
   {
     name: "Oklch Formulaic Palette Builder",
     status: "Complete",
-    description: "Create a custom color palette using your own mathematical formulas.",
+    link: Routes.OklchFormulaic,
+    description:
+      "Create a custom color palette using your own mathematical formulas.",
     callouts: [
       {
         type: "warning",
