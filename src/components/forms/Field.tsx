@@ -113,7 +113,7 @@ export function Field(props: FieldProps) {
             justify="center"
             align="center"
           >
-            <Label level={4} fill htmlFor={inputId}>
+            <Label level={4} htmlFor={inputId}>
               {label}
             </Label>
             {kids as React.ReactNode}

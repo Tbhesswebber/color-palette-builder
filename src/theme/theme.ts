@@ -1,6 +1,8 @@
+import React from 'react'
 import {
   HeadingExtendedProps,
   ParagraphExtendedProps,
+  ThemeContext,
   ThemeType as GrommetThemeType,
 } from "grommet";
 import { A } from "kea-router";
@@ -11,7 +13,7 @@ import { ExtendedThemeColors, ThemeMode } from "./utils";
 export const customTheme = {
   global: {
     colors: {
-      control: "primary",
+      control: "secondary",
       error: "oklch(59.31% 0.1904 20.53)",
       white: "var(--colors_white)",
       black: "var(--colors_black)",
@@ -74,7 +76,7 @@ export const customTheme = {
     color: "primary",
     extend: `&:focus {
       box-shadow: none;
-    }`
+    }`,
   },
   button: {
     extend: ({ theme }: { theme: GlobalTheme }) => `
@@ -98,10 +100,10 @@ export const customTheme = {
         transition-duration: 50ms;
       }
       `,
-      padding: { horizontal: "16", vertical: "12" },
+    padding: { horizontal: "16px", vertical: "12px" },
     size: {
       small: {
-        iconOnly: { pad: "8" },
+        iconOnly: { pad: "8px" },
       },
       medium: {
         iconOnly: { pad: "12px" },
@@ -157,13 +159,24 @@ export const customTheme = {
     `,
   },
   rangeInput: {
-    thumb: {color: "primary"},
-    track: {color: "#fff", opacity: 1, lower: {color: "blue"}, height: "4px"},
+    thumb: { color: "primary" },
+    track: {
+      color: "#fff",
+      opacity: 1,
+      lower: { color: "blue" },
+      height: "4px",
+    },
   },
   tabs: {
     header: {
-      extend: `& > button {box-shadow: none;}`
-    }
+      extend: `
+        & > button[role=tab]:active,
+        & > button[role=tab]:focus,
+        & > button[role=tab] {
+          box-shadow: none;
+        }
+      `,
+    },
   },
   tab: {
     active: {
@@ -196,3 +209,6 @@ type GlobalTheme = {
 };
 
 export type ThemeType = typeof customTheme & GlobalTheme & GrommetThemeType;
+export function useThemeContext() {
+  return React.useContext<ThemeType>(ThemeContext as React.Context<ThemeType>);
+}

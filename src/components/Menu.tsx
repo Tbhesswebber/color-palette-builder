@@ -1,17 +1,17 @@
 import {
   Box,
+  ButtonExtendedProps,
   DropButton,
   DropButtonExtendedProps,
   MenuExtendedProps,
 } from "grommet";
-import { Menu as MenuIcon } from "grommet-icons";
-import styled from "styled-components";
-import { routeMap } from "../router";
+import styled, { css } from "styled-components";
 import React from "react";
 import { themeColor } from "../utils/styled";
 import { useToggle } from "react-use";
 import { Anchor } from "./general/anchor";
 import { Button } from "./general/button";
+import { useRouterValues } from "../logics/sceneLogic";
 
 interface MenuProps
   extends Omit<DropButtonExtendedProps, "dropContent" | "dropProps"> {
@@ -23,12 +23,19 @@ const ListItem = styled.li`
   text-transform: capitalize;
 `;
 
-const MenuButtonTrigger = styled(DropButton)`
+const menuButtonStyles = css<DropButtonExtendedProps | ButtonExtendedProps>`
+  padding: 4px 22px;
   border-bottom: solid 1px transparent;
+  color: white;
 
+  &[data-active] {
+    border-bottom: solid 1px ${themeColor("primary")};
+  }
+  
   &&:hover:not(:disabled),
   &&:active:not(:disabled),
   &&:focus-visible:not(:disabled) {
+    color: ${themeColor("primary")};
     border-bottom: solid 1px ${themeColor("primary")};
   }
 
@@ -42,23 +49,12 @@ const MenuButtonTrigger = styled(DropButton)`
   }
 `;
 
+const MenuButtonTrigger = styled(DropButton)`
+  ${menuButtonStyles}
+`;
+
 const MenuButton = styled(Button)`
-  border-bottom: solid 1px transparent;
-
-  &&:hover:not(:disabled),
-  &&:active:not(:disabled),
-  &&:focus-visible:not(:disabled) {
-    border-bottom: solid 1px ${themeColor("primary")};
-  }
-
-  /* unsetting button stuff */
-  box-shadow: none;
-  border-radius: 0%;
-  &&:hover,
-  &&:active,
-  &&:focus {
-    box-shadow: none;
-  }
+  ${menuButtonStyles}
 `;
 
 const dropAlign = { top: "bottom", left: "left" };
@@ -71,6 +67,8 @@ export function Menu({ label, items, ...props }: MenuProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
   const [isOpen, toggleOpen] = useToggle(false);
+  const {currentLocation: {pathname}} = useRouterValues()
+  const isActive = items.flat().some(({href}) => pathname === href);
 
   const content = React.useMemo(() => {
     return (
@@ -88,7 +86,7 @@ export function Menu({ label, items, ...props }: MenuProps) {
           }
           return (
             <ListItem key={item.href}>
-              <Anchor href={item.href}>
+              <Anchor href={item.href} color="currentColor">
                 {item.label}
               </Anchor>
             </ListItem>
@@ -103,12 +101,13 @@ export function Menu({ label, items, ...props }: MenuProps) {
   }
 
   if (items.length === 1 && !Array.isArray(items[0]) && !props.disabled) {
-    return <MenuButton href={items[0].href}>{items[0].label ?? label}</MenuButton>;
+    return <MenuButton data-active={isActive} href={items[0].href}>{items[0].label ?? label}</MenuButton>;
   }
 
   return (
     <MenuButtonTrigger
       ref={buttonRef}
+      data-active={isActive || isOpen || null}
       a11yTitle={`${label} menu`}
       {...props}
       dropProps={dropProps}
@@ -116,7 +115,7 @@ export function Menu({ label, items, ...props }: MenuProps) {
       open={isOpen}
       onMouseEnter={() => toggleOpen(true)}
       onMouseLeave={(e: React.MouseEvent) => {
-          e.relatedTarget !== containerRef.current &&
+        e.relatedTarget !== containerRef.current &&
           e.relatedTarget !== containerRef.current?.parentElement &&
           toggleOpen(false);
       }}

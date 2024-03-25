@@ -59,7 +59,7 @@ export function Layout({ children }: LayoutProps) {
       >
         <Header>
           <Anchor href="/" color="text">Color Palette Builder</Anchor>
-          <Nav direction="row" align="start" flex="grow">
+          <Nav direction="row" align="stretch" flex="grow">
             <Menu label="Color Tools" items={colorToolMenuItems}/>
             <Menu label="Box Shadow Generator" disabled items={[]}/>
             <Menu label="Fluid Design Calculator" items={fluidDesignMenuItems}/>
