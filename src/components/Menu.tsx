@@ -26,12 +26,13 @@ const ListItem = styled.li`
 const menuButtonStyles = css<DropButtonExtendedProps | ButtonExtendedProps>`
   padding: 4px 22px;
   border-bottom: solid 1px transparent;
-  color: white;
-
-  &[data-active] {
+  color: ${themeColor("white")};
+  background-color: inherit;
+  
+  &[data-active=true] {
     border-bottom: solid 1px ${themeColor("primary")};
   }
-  
+
   &&:hover:not(:disabled),
   &&:active:not(:disabled),
   &&:focus-visible:not(:disabled) {
@@ -101,7 +102,7 @@ export function Menu({ label, items, ...props }: MenuProps) {
   }
 
   if (items.length === 1 && !Array.isArray(items[0]) && !props.disabled) {
-    return <MenuButton data-active={isActive} href={items[0].href}>{items[0].label ?? label}</MenuButton>;
+    return <MenuButton active={isActive} data-active={isActive} href={items[0].href}>{items[0].label ?? label}</MenuButton>;
   }
 
   return (
