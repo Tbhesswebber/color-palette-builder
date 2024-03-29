@@ -9,11 +9,20 @@ const Container = styled(Box)`
   min-width: fit-content;
   margin: 0 auto;
 
+  .BezierCurveEditor_root {
+    pointer-events: none;
+  }
+
+  .BezierCurveEditor_handle {
+    pointer-events: initial;
+  }
+
   .BezierCurveEditor_handle.BezierCurveEditor_active {
     box-shadow:
       0 0 4.5px 4.5px var(--bce-colors-handle-active-shadow),
       0 0 4px 4px currentColor;
   }
+  
 
   --bce-sizes-curve-handle: 24px;
   --bce-padding-sm: 4px;
@@ -28,7 +37,7 @@ const Container = styled(Box)`
     ${themeColor("darkGrey")},
     transparent 75%
   );
-  --bce-colors-outerarea: ${themeColor("background")};
+  --bce-colors-outerarea: transparent;
   --bce-colors-axisline: ${themeColor("background")};
   --bce-colors-handle-fixed: ${themeColor("text")};
   --bce-colors-handle-start: ${themeColor("primary")};

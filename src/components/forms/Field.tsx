@@ -40,11 +40,6 @@ const StackingBox = styled(Box)`
     grid-column: 1 / -1;
   }
 
-  & > :nth-child(n + 3) {
-    z-index: 1;
-    pointer-events: none;
-  }
-
   & > :nth-child(2) {
     grid-row: 1 / -1;
   }
