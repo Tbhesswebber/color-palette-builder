@@ -1,4 +1,4 @@
-import { Box, BoxExtendedProps, Text, TextExtendedProps, ThemeContext } from "grommet";
+import { Text, TextExtendedProps } from "grommet";
 import React from "react";
 import { styled } from "styled-components";
 import { Font } from "../../theme/constants";
@@ -7,6 +7,8 @@ import { themeEdgeSize, themeColor, themeMode } from "../../utils/styled";
 const CodeElement = styled(Text).attrs({ forwardedAs: "code" })`
   margin: 0 ${themeEdgeSize("hair")};
   padding: 0 0.2em;
+
+  font-size: 1.25em;
 
   background-color: ${themeColor("lightGrey")};
 

@@ -1,16 +1,16 @@
 import React from "react";
-import { ButtonExtendedProps as GButtonProps, Button as GButton } from "grommet";
+import { ButtonExtendedProps as GButtonExtendedProps, Button as GButton } from "grommet";
 import { useRouterActions } from "../../logics/sceneLogic";
 import { DefaultTheme, styled } from "styled-components";
 import { themeEdgeSize } from "../../utils/styled";
 
-const defaultPadding: GButtonProps["pad"] = {
+const defaultPadding: GButtonExtendedProps["pad"] = {
   horizontal: "22px",
   vertical: "4px",
 };
 
 
-export interface ButtonProps extends GButtonProps {
+export interface ButtonProps extends GButtonExtendedProps {
   round?: keyof Required<Required<DefaultTheme["global"]>["edgeSize"]>
 }
 
