@@ -115,9 +115,8 @@ export const customTheme = {
   rangeInput: {
     thumb: { color: "primary" },
     track: {
-      color: "#fff",
+      color: "green",
       opacity: 1,
-      lower: { color: "blue" },
       height: "4px",
     },
   },
