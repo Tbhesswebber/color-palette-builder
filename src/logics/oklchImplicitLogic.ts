@@ -32,7 +32,6 @@ export interface ColorFormFields {
   complementaryHueGap: number;
 }
 
-
 const defaultValues: Required<ColorFormFields> = {
   centerPoint: 197,
   hueFormula: [0, 0.5, 0.5, 0.75, 0.15, 0.2, 1, 0.1],
@@ -118,7 +117,7 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
         analogousHueCount: count,
         analogousHueGap: gap,
       }: ColorFormFields) => ({
-        gap: Number(gap) * (180 / Math.max(count - 1, 1)),
+        gap: Math.max(Number(gap) * (180 / Math.max(count - 1, 1)), 10),
         count: Number(count),
       }),
     ],
@@ -128,7 +127,7 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
         complementaryHueCount: count,
         complementaryHueGap: gap,
       }: ColorFormFields) => ({
-        gap: Number(gap) * (180 / count),
+        gap: Math.max(Number(gap) * (180 / count), 10),
         count: Number(count),
       }),
     ],
@@ -158,13 +157,13 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
       (s) => [s.centerPoint, s.analogousHues, s.complementaryHues],
       (hue, analogousHues, complementaryHues): number[] => {
         let analogousHueList: number[] = hueList(hue, {
-          count: Number(analogousHues.count),
-          gap: Number(analogousHues.gap),
+          count: analogousHues.count,
+          gap: analogousHues.gap,
         });
 
         let complementaryHueList: number[] = hueList(hue - 180, {
-          count: Number(complementaryHues.count),
-          gap: Number(complementaryHues.gap),
+          count: complementaryHues.count,
+          gap: complementaryHues.gap,
         });
 
         return [...analogousHueList, ...complementaryHueList];
@@ -181,13 +180,7 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
 function calculateColors(
   values: oklchImplicitFormLogicType["values"]
 ): [...Color[]][] {
-  const {
-    lightnessShifts,
-    chromaShifts,
-    hueShifts,
-    tintCount,
-    hues,
-  } = values;
+  const { lightnessShifts, chromaShifts, hueShifts, tintCount, hues } = values;
 
   return hues.map((hue) =>
     Array.from({ length: tintCount }, (__, tintIndex) => {
@@ -209,7 +202,12 @@ function calculateColors(
 }
 
 function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
-  const { tintCount, lightnessFormula, chromaFormula, centerPoint: hue } = values;
+  const {
+    tintCount,
+    lightnessFormula,
+    chromaFormula,
+    centerPoint: hue,
+  } = values;
   const lightnesses = lightnessFormula.getLUT(tintCount + 2);
   const chromas = chromaFormula.getLUT(tintCount + 2).reverse();
 
