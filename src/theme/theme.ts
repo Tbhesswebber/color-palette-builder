@@ -5,65 +5,19 @@ import {
   ThemeContext,
   ThemeType as GrommetThemeType,
 } from "grommet";
-import { A } from "kea-router";
-import { DefaultTheme } from "styled-components";
-import { Font, TShirtSizeExtended } from "./constants";
-import { ExtendedThemeColors, ThemeMode } from "./utils";
+import { themeColor, themeEdgeSize, themeElevation, themeMode, themeText } from '../utils/styled';
+import { global, GlobalTheme } from './themeParts/global';
+import {css} from "styled-components"
+
+type SafeThemeType = {
+  theme: {
+    global: GlobalTheme;
+    dark: boolean;
+  };
+};
 
 export const customTheme = {
-  global: {
-    colors: {
-      control: "secondary",
-      error: "oklch(59.31% 0.1904 20.53)",
-      white: "var(--colors_white)",
-      black: "var(--colors_black)",
-      text: { dark: "var(--colors_white)", light: "var(--colors_black)" },
-      focus: "grey",
-      border: "lightGrey",
-    },
-    breakpoints: {
-      small: {
-        value: 400,
-      },
-      medium: {
-        value: 800,
-      },
-      large: {
-        value: undefined,
-      },
-    },
-    elevation: {
-      light: {
-        none: "none",
-        xsmall:
-          "0px 1px 2px color-mix(in oklab, var(--colors_black), transparent 50%)",
-        small:
-          "0px 2px 4px color-mix(in oklab, var(--colors_black), transparent 50%)",
-        medium:
-          "0px 3px 8px color-mix(in oklab, var(--colors_black), transparent 50%)",
-        large:
-          "0px 6px 12px color-mix(in oklab, var(--colors_black), transparent 50%)",
-        xlarge:
-          "0px 8px 16px color-mix(in oklab, var(--colors_black), transparent 50%)",
-      },
-      dark: {
-        none: "none",
-        xsmall:
-          "0px 1px 2px color-mix(in oklab, var(--colors_white), transparent 50%)",
-        small:
-          "0px 2px 4px color-mix(in oklab, var(--colors_white), transparent 50%)",
-        medium:
-          "0px 3px 8px color-mix(in oklab, var(--colors_white), transparent 50%)",
-        large:
-          "0px 6px 12px color-mix(in oklab, var(--colors_white), transparent 50%)",
-        xlarge:
-          "0px 8px 16px color-mix(in oklab, var(--colors_white), transparent 50%)",
-      },
-    },
-    font: {
-      family: Font.SansSerif,
-    },
-  },
+  global,
   icon: {
     size: {
       small: "12px",
@@ -79,7 +33,7 @@ export const customTheme = {
     }`,
   },
   button: {
-    extend: ({ theme }: { theme: GlobalTheme }) => `
+    extend: ({ theme }: SafeThemeType) => `
       transition: box-shadow 100ms ease-in-out;
       will-change: box-shadow;
       box-shadow: ${
@@ -126,7 +80,7 @@ export const customTheme = {
       background: { opacity: 1, color: { dark: "black", light: "white" } },
     },
     hover: {
-      extend: ({ theme }: { theme: GlobalTheme }) =>
+      extend: ({ theme }: SafeThemeType) =>
         `box-shadow: ${
           theme.global.elevation[theme.dark ? "dark" : "light"].xsmall
         };
@@ -168,15 +122,30 @@ export const customTheme = {
     },
   },
   tabs: {
+    gap: "xsmall",
     header: {
-      extend: `
-        & > button[role=tab]:active,
-        & > button[role=tab]:focus,
-        & > button[role=tab] {
+      extend: css`
+        & > button[role="tab"]:active,
+        & > button[role="tab"]:focus,
+        & > button[role="tab"] {
           box-shadow: none;
         }
       `,
     },
+    extend: css`
+      & [role="tablist"] > button:has(> div > svg) > div {
+        margin: 0;
+        padding: ${themeEdgeSize("xxsmall", "18px")};
+      }
+
+      & [role="tablist"] > button:has(> div > svg) {
+        box-shadow: ${themeElevation("xsmall")};
+        background-color: ${themeMode(
+          `var(--colors_white)`,
+          `var(--colors_black)`
+        )};
+      }
+    `,
   },
   tab: {
     active: {
@@ -193,22 +162,26 @@ export const customTheme = {
     hover: {
       background: "lightGrey",
     },
-    pad: "small",
+    margin: "none",
+    pad: "xsmall",
+    extend: css`
+      font-size: ${themeText("xsmall")};
+    `,
   },
   tag: {
     background: "transparent",
   },
+  text: {
+    ...global.fontSize,
+  },
 } as const satisfies GrommetThemeType;
 
-type GlobalTheme = {
-  global: {
-    colors: ExtendedThemeColors;
-    elevation: ThemeMode<Record<TShirtSizeExtended, string>>;
-  };
+type Theme = {
+  global: GlobalTheme;
   dark: boolean;
 };
 
-export type ThemeType = typeof customTheme & GlobalTheme & GrommetThemeType;
+export type ThemeType = Theme & GrommetThemeType;
 export function useThemeContext() {
   return React.useContext<ThemeType>(ThemeContext as React.Context<ThemeType>);
 }

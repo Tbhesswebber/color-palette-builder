@@ -10,11 +10,14 @@ interface PaletteProps {
 }
 
 const PaletteWrapper = styled(Box)`
-  container-name: swatch;
+  container-name: palette;
   container-type: inline-size;
 `;
 
 const Swatch = styled(Box)`
+  container-name: swatch;
+  container-type: size;
+
   code {
     margin: 0;
     padding: 0;
@@ -23,57 +26,87 @@ const Swatch = styled(Box)`
     background: inherit;
     color: transparent;
     background-clip: text;
-    font-weight: bold;
-    font-size: clamp(10px, calc(10cqw - 3px), 24px);
     filter: invert(100%) grayscale(100%) contrast(9000%);
 
-    display: none;
+    visibility: hidden;
+    /* display: none; */
     opacity: 0;
     will-change: opacity, display;
-    transition: opacity 700ms ease-in-out;
+    transition: opacity 200ms ease-in-out;
   }
 
   &:hover code {
-    display: block;
+    visibility: visible;
+    /* display: block; */
     opacity: 1;
-    transition: opacity 705ms ease-in-out;
+    transition: opacity 150ms ease-in-out;
   }
 
-  @container swatch (max-width: 100px) {
+  @container swatch (min-width: 0px) {
     code {
-      font-weight: 900;
+      line-height: 40cqh;
+      font-size: 35cqh;
+    }
+  }
+
+  @container swatch (max-height: 40px) {
+    code {
+      font-weight: 650;
     }
   }
 `;
 
 export function Palette({ count, prefix }: PaletteProps) {
+  const cssVariables = React.useMemo(
+    () =>
+      Array.from({ length: count }, (_, index): string => {
+        return `--${prefix}_${index}`;
+      }),
+    [count, prefix]
+  );
   const colors = React.useMemo(
     () =>
-      Array.from({ length: count }, (_, index): JSX.Element => {
-        const cssVar = `--${prefix}_${index}`;
+      cssVariables.map((cssVar): () => JSX.Element => {
         const color = `var(${cssVar})`;
-        return (
+        return () => {
+          const [computedColor, getComputedSwatchColor] = useComputedColor(cssVar)
+          
+          return (
           <Swatch
-            key={color}
             flex="grow"
             basis="0%"
             background={color}
             color={color}
             align="center"
             justify="center"
+            onMouseEnter={getComputedSwatchColor}
           >
             <Code>
-              {cssVar}
+              {computedColor ?? cssVar}
             </Code>
           </Swatch>
-        );
+        );}
       }),
     [count, prefix]
   );
 
   return (
     <PaletteWrapper flex="grow" direction="column" gap="xsmall">
-      {colors}
+      {colors.map((Color, index) => <Color key={cssVariables[index]} />)}
     </PaletteWrapper>
   );
+}
+
+function useComputedColor(cssVar: string): [string, React.MouseEventHandler] {
+  const [computedColor, setComputedColor] = React.useState(cssVar);
+
+  React.useEffect(() => {
+    getComputedStyle(document.body).getPropertyValue(cssVar);
+  }, [cssVar])
+
+  const handleHover = function getComputedSwatchColor(event: React.MouseEvent<HTMLDivElement>): void {
+    setComputedColor(getComputedStyle(document.body).getPropertyValue(cssVar));
+  }
+
+  return [computedColor, handleHover];
 }

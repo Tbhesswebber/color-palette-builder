@@ -1,4 +1,5 @@
 import {
+  AnchorExtendedProps,
   Box,
   ButtonExtendedProps,
   DropButton,
@@ -6,38 +7,70 @@ import {
   MenuExtendedProps,
 } from "grommet";
 import styled, { css } from "styled-components";
-import React from "react";
+import React, { isValidElement } from "react";
 import { themeColor } from "../utils/styled";
 import { useToggle } from "react-use";
 import { Anchor } from "./general/anchor";
 import { Button } from "./general/button";
 import { useRouterValues } from "../logics/sceneLogic";
+import { TShirtSizeExtended } from "../theme/constants";
+import { Hr } from "./general/hr";
 
-interface MenuProps
+export interface MenuProps
   extends Omit<DropButtonExtendedProps, "dropContent" | "dropProps"> {
-  items: MenuExtendedProps["items"];
+  items: AnchorExtendedProps[] | AnchorExtendedProps[][];
+  showBorder?: boolean;
 }
 
-const ListItem = styled.li`
+const ListItem = styled.li<{
+  showBorder?: boolean;
+  size?: TShirtSizeExtended | string;
+}>`
   list-style-type: none;
-  text-transform: capitalize;
-`;
 
-const menuButtonStyles = css<DropButtonExtendedProps | ButtonExtendedProps>`
   padding: 4px 22px;
-  border-bottom: solid 1px transparent;
+
+  line-height: ${({ size = "medium", theme }) =>
+    size in theme.text ? theme.text[size as TShirtSizeExtended].height : ""};
+  font-size: ${({ size = "medium", theme }) =>
+    size in theme.text ? theme.text[size as TShirtSizeExtended].size : size};
+  text-transform: capitalize;
+
+  border-inline-start: solid 1px transparent;
   color: ${themeColor("text")};
   background-color: inherit;
-  
-  &[data-active=true] {
-    border-bottom: solid 1px ${themeColor("primary")};
+
+  &&:has(:hover),
+  &&[data-active="true"],
+  &&:has(:focus-visible) {
+    color: ${themeColor("primary")};
+    border-inline-start: solid 1px ${themeColor("primary")};
   }
+`;
+
+const menuButtonStyles = css<{
+  showBorder?: boolean;
+  size?: TShirtSizeExtended | string;
+  active?: boolean
+}>`
+  --menu-border-color: ${({ showBorder, active, theme }) =>
+    showBorder || active ? themeColor("primary")({ theme }) : "transparent"};
+  padding: 4px 22px;
+
+  line-height: ${({ size = "medium", theme }) =>
+    size in theme.text ? theme.text[size as TShirtSizeExtended].height : ""};
+  font-size: ${({ size = "medium", theme }) =>
+    size in theme.text ? theme.text[size as TShirtSizeExtended].size : size};
+
+  border-block-end: solid 1px transparent;
+  color: ${themeColor("text")};
+  background-color: inherit;
 
   &&:hover:not(:disabled),
-  &&:active:not(:disabled),
+  &&[data-active=true]:not(:disabled),
   &&:focus-visible:not(:disabled) {
     color: ${themeColor("primary")};
-    border-bottom: solid 1px ${themeColor("primary")};
+    border-block-end: solid 1px var(--menu-border-color);
   }
 
   /* unsetting button stuff */
@@ -58,69 +91,127 @@ const MenuButton = styled(Button)`
   ${menuButtonStyles}
 `;
 
-const dropAlign = { top: "bottom", left: "left" };
-const dropProps: DropButtonExtendedProps["dropProps"] = {
-  round: "xsmall",
-  margin: { bottom: "small" },
+const dropAlign: DropButtonExtendedProps["dropAlign"] = {
+  top: "bottom",
+  left: "left",
 };
 
-export function Menu({ label, items, ...props }: MenuProps) {
+export function Menu({
+  label: labelProp,
+  items,
+  showBorder = true,
+  open,
+  ...props
+}: MenuProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const [isOpen, toggleOpen] = useToggle(false);
-  const {currentLocation: {pathname}} = useRouterValues()
-  const isActive = items.flat().some(({href}) => pathname === href);
+  const [isOpen, toggleOpen] = useToggle(open === true);
+  const {
+    currentLocation: { pathname },
+  } = useRouterValues();
+  const isActive = items
+    .flat()
+    .some((item) =>
+      !Array.isArray(item)
+        ? pathname === item.href
+        : item.some(({ href }) => pathname === href)
+    );
+  const label =
+    isValidElement(labelProp) && labelProp.props.children
+      ? labelProp.props.children
+      : labelProp;
+
+  const dropProps = React.useMemo<DropButtonExtendedProps["dropProps"]>(
+    () => ({
+      size: props.size,
+      round: "xsmall",
+      margin: { bottom: "small" },
+      as: "ul",
+      elevation: "small"
+    }),
+    [props.size]
+  );
 
   const content = React.useMemo(() => {
     return (
       <Box
         pad="medium"
         ref={containerRef}
+        direction="column"
         onMouseLeave={(e: React.MouseEvent) => {
-            e.relatedTarget !== buttonRef.current &&
-            toggleOpen(false);
+          e.relatedTarget !== buttonRef.current && toggleOpen(false);
         }}
+        gap="xsmall"
       >
-        {items.map((item) => {
+        {items.map((item, index) => {
           if (Array.isArray(item)) {
-            throw new Error("The custom menu currently doesn't handle groups.");
+            const section = item.map((currentItem) => {
+              return (
+                <ListItem
+                  key={currentItem.href}
+                  data-active={currentItem.href === pathname}
+                >
+                  <Anchor
+                    {...currentItem}
+                    color="currentColor"
+                    size={currentItem.size ?? props.size}
+                  ></Anchor>
+                </ListItem>
+              );
+            });
+            return !!items[index + 1] && item.length
+              ? [...section, <Hr key={`hr-${index}`} />]
+              : section;
           }
           return (
-            <ListItem key={item.href}>
-              <Anchor href={item.href} color="currentColor">
-                {item.label}
-              </Anchor>
+            <ListItem key={item.href} data-active={item.href === pathname}>
+              <Anchor
+                {...item}
+                color="currentColor"
+                size={item.size ?? props.size}
+              ></Anchor>
             </ListItem>
           );
         })}
       </Box>
     );
-  }, [items]);
+  }, [items, pathname, props.size]);
 
   if (items.length === 0 && !props.disabled) {
     return null;
   }
 
   if (items.length === 1 && !Array.isArray(items[0]) && !props.disabled) {
-    return <MenuButton active={isActive} data-active={isActive} href={items[0].href}>{items[0].label ?? label}</MenuButton>;
+    return (
+      <MenuButton
+        {...props}
+        size={items[0].size ?? props.size}
+        active={isActive}
+        data-active={isActive}
+        href={items[0].href}
+        label={items[0].label ?? label}
+        showBorder={showBorder !== false}
+      ></MenuButton>
+    );
   }
 
   return (
     <MenuButtonTrigger
       ref={buttonRef}
-      data-active={isActive || isOpen || null}
+      data-active={isActive || isOpen}
       a11yTitle={`${label} menu`}
       {...props}
+      showBorder={showBorder !== false}
+      open={isOpen}
       dropProps={dropProps}
       dropAlign={dropAlign}
-      open={isOpen}
       onMouseEnter={() => toggleOpen(true)}
       onMouseLeave={(e: React.MouseEvent) => {
         e.relatedTarget !== containerRef.current &&
           e.relatedTarget !== containerRef.current?.parentElement &&
           toggleOpen(false);
       }}
-      label={label}
+      label={labelProp}
       dropContent={content}
     />
   );

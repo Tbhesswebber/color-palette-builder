@@ -39,8 +39,8 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0
   react-bezier-curve-editor:
-    specifier: ^2.0.0
-    version: 2.0.0(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^2.1.0
+    version: 2.1.0(react-dom@18.2.0)(react@18.2.0)
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
@@ -2562,8 +2562,8 @@ packages:
       react-is: 16.13.1
     dev: false
 
-  /react-bezier-curve-editor@2.0.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-wHZoEqtlkfjRMD3nYdLAFE+mT/nEBeDu72/phLvPnHbQFHT4fATcnqnmHE903B0y0OIU8I/NPbikqA/8Fsub8g==}
+  /react-bezier-curve-editor@2.1.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-0OB5rflXAkVchTlwGK5WZSSelpdDOK5rWbzJp3VfRPI449SVLPMvijNR+w4QwmKR2Y84BPANev5I1ZEXJ45bSg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'

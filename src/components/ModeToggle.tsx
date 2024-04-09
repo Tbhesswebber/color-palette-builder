@@ -1,25 +1,36 @@
-import { Box, BoxExtendedProps, Button } from "grommet";
+import { Box, BoxExtendedProps, Button, ButtonExtendedProps } from "grommet";
 import { Moon, Sun } from "grommet-icons";
 import React from "react";
 import { useMedia } from "react-use";
 import styled from "styled-components";
+import { themeColor } from "../utils/styled";
 
-interface ModeToggleProps {
+interface ModeToggleProps extends ButtonExtendedProps {
   mode: "light" | "dark" | "system";
   toggle: () => void;
+  floating?: boolean;
 }
 
-const ToggleButton = styled(Button)`
+const ToggleButton = styled<React.FC<Omit<ModeToggleProps, "toggle">>>(Button)`
   border-radius: 50%;
+
+  & svg {
+    fill: ${themeColor("text")};
+    stroke: ${themeColor("text")};
+  }
+
+  ${({ floating }) => (floating ? "" : "box-shadow: none;")}
 `;
 
-export function ModeToggle({ mode, toggle }: ModeToggleProps) {
+export function ModeToggle({ mode, toggle, floating = true }: ModeToggleProps) {
   
     return (
       <ToggleButton
         a11yTitle={`Toggle ${mode === "light" ? "dark" : "light"} mode`}
         icon={mode === "light" ? <Moon /> : <Sun />}
+        mode={mode}
         size="medium"
+        floating={floating}
         onClick={() => {
           if (
             document &&
