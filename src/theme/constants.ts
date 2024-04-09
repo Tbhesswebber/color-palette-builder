@@ -1,7 +1,7 @@
 export const enum Font {
   Serif = '"Josefin Slab", serif',
   SansSerif = '"Josefin Sans", sans-serif',
-  Mono = '"Cutive Mono", monospace',
+  Mono = '"Red Hat Mono", monospace',
 }
 
 export type TShirtSize = "small" | "medium" | "large";
