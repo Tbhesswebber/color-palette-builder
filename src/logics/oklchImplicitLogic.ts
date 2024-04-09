@@ -209,14 +209,15 @@ function calculateColors(
 }
 
 function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
-  const { tintCount, lightnessFormula, centerPoint: hue } = values;
-  const lightnesses = lightnessFormula.getLUT(tintCount + 2).reverse();
+  const { tintCount, lightnessFormula, chromaFormula, centerPoint: hue } = values;
+  const lightnesses = lightnessFormula.getLUT(tintCount + 2);
+  const chromas = chromaFormula.getLUT(tintCount + 2).reverse();
 
   const colors = Array.from({ length: tintCount }, (_, index) => {
     const values = {
       hue,
-      chroma: 0.017,
-      lightness: round(lightnesses[index + 1].x * 100),
+      chroma: round(chromas[index + 1].y * 0.017 + 0.017, 3),
+      lightness: round(99 - lightnesses[index + 1].y * 98.9),
     };
 
     return {
@@ -228,16 +229,16 @@ function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
   return [
     {
       hue,
-      chroma: 0.01,
-      lightness: 99,
-      css: `oklch(99% 0.01 ${hue}deg)`,
+      chroma: round(chromas[0].y * 0.017 + 0.017, 3),
+      lightness: 99.9,
+      css: `oklch(99.9% 0.01 ${hue}deg)`,
     },
     ...colors,
     {
       hue,
-      chroma: 0.017,
-      lightness: 0,
-      css: `oklch(1% 0.017 ${hue}deg)`,
+      chroma: round(chromas[chromas.length - 1].y * 0.017 + 0.017, 3),
+      lightness: 0.1,
+      css: `oklch(0.1% 0.017 ${hue}deg)`,
     },
   ];
 }
