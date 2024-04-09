@@ -8,17 +8,10 @@ import {
 import { round } from "../utils/format";
 
 import { hueList } from "../utils/hueSpread";
-import { connectColorLogic } from "./colorLogic";
+import { Color, connectColorLogic } from "./colorLogic";
 import { colorLogicType } from "./colorLogicType";
 
 import type { oklchImplicitFormLogicType } from "./oklchImplicitLogicType";
-
-export interface Color {
-  hue: number;
-  chroma: number;
-  lightness: number;
-  css: string;
-}
 
 export interface ColorFormFields {
   centerPoint: number;
@@ -180,11 +173,12 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
 function calculateColors(
   values: oklchImplicitFormLogicType["values"]
 ): [...Color[]][] {
-  const { lightnessShifts, chromaShifts, hueShifts, tintCount, hues } = values;
+  const { lightnessShifts, chromaShifts, hueShifts, tintCount, hues, centerPoint } = values;
 
   return hues.map((hue) =>
     Array.from({ length: tintCount }, (__, tintIndex) => {
       const values = {
+        primary: centerPoint === hue,
         // normalize at the center of the y axis
         hue: round((hueShifts[tintIndex].y - 0.5) * 10 + hue),
         // max out at 0.4 - need to add clipping eventually

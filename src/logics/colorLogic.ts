@@ -25,6 +25,8 @@ export interface Color {
   chroma: number;
   lightness: number;
   css: string;
+  primary?: boolean;
+  secondary?: boolean;
 }
 
 export const colorLogic = kea<colorLogicType>([
@@ -51,13 +53,6 @@ export const colorLogic = kea<colorLogicType>([
             const toneVars = tones.map(
               ({ css }, tone) => `--colors_${index}_${tone}: ${css};`
             );
-            if (index === hues.length - 1) {
-              const secondaryVars = tones.map(
-                (_, tone) =>
-                  `--colors_secondary_${tone}: var(--colors_${index}_${tone});`
-              );
-              return [secondaryVars, toneVars];
-            }
             return [toneVars];
           })
           .flat();
@@ -111,14 +106,32 @@ export function connectColorLogic<T extends Logic = Logic>({
     listeners(({ values }) => ({
       [listenerAction as string]: async (_, breakpoint) => {
         await breakpoint(50);
-        colorLogic.actions.setColors(colors(values));
+        const colorValues = colors(values);
+        colorLogic.actions.setColors(colorValues);
         colorLogic.actions.setGreys(greys(values));
+        const primary = colorValues.find((color) => color[0].primary);
+        if (primary) {
+          colorLogic.actions.setPrimary(primary);
+        }
+        const secondary = colorValues.find((color) => color[0].secondary);
+        if (secondary) {
+          colorLogic.actions.setSecondary(secondary);
+        }
         await breakpoint(50);
       },
     }))(logic);
     afterMount(({ values }) => {
-      colorLogic.actions.setColors(colors(values));
+      const colorValues = colors(values);
+      colorLogic.actions.setColors(colorValues);
       colorLogic.actions.setGreys(greys(values));
+      const primary = colorValues.find((color) => color[0].primary);
+      if (primary) {
+        colorLogic.actions.setPrimary(primary);
+      }
+      const secondary = colorValues.find((color) => color[0].secondary);
+      if (secondary) {
+        colorLogic.actions.setSecondary(secondary);
+      }
     })(logic);
     beforeUnmount(({ values }) => {
       window.localStorage.setItem(storageKey, JSON.stringify(values));
