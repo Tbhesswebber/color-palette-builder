@@ -41,6 +41,10 @@ const RangeInputContainer = styled(Box)`
       display: revert;
     }
   }
+
+  &&& input[type="range"] {
+    height: unset;
+  }
 `;
 
 export function RangeInput({
@@ -75,17 +79,17 @@ export function RangeInput({
         secondary
         hoverIndicator={{ elevation: "small", background: {} }}
       />
-      <Box align="center" width="small" flex direction="column">
-        <Stack>
+      <Box align="center" width="small" flex direction="column" gap="xxsmall">
+        <Stack fill guidingChild={"last"} interactiveChild="last" >
           <Meter round thickness="xsmall" aria-hidden="true" />
           <GRangeInput
             a11yTitle="Select range value"
+            {...props}
             min={min}
             max={max}
             step={Number(step)}
-            value={String(value)}
+            value={Number(value)}
             onChange={({ target: { value } }) => onChange && onChange(value)}
-            {...props}
           />
         </Stack>
         <Box direction="row" fill justify="between">
