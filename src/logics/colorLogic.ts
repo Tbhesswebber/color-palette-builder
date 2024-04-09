@@ -31,29 +31,26 @@ export const colorLogic = kea<colorLogicType>([
   path(["src", "logics", "colorLogic"]),
   actions({
     setColors: (colors: Color[][]) => ({ colors }),
+    setPrimary: (colors: Color[]) => ({ colors }),
+    setSecondary: (colors: Color[]) => ({ colors }),
     setGreys: (greys: Color[]) => ({ greys }),
   }),
   reducers({
+    primaryColor: [getDefaults("primaryColor"), {setPrimary: (_, {colors}) => colors}],
+    secondaryColor: [getDefaults("secondaryColor") as Color[], {setSecondary: (_, {colors}) => colors}],
     colors: [getDefaults("colors"), { setColors: (_, { colors }) => colors }],
     greys: [getDefaults("greys"), { setGreys: (_, { greys }) => greys }],
   }),
   selectors({
     tintCount: [(s) => [s.colors], (colors) => colors[0]?.length ?? 0],
     cssVars: [
-      (s) => [s.colors, s.greys],
-      (hues, greys) => {
+      (s) => [s.colors, s.greys, s.primaryColor, s.secondaryColor],
+      (hues, greys, primary, secondary) => {
         const hueVars = hues
           .map((tones, index) => {
             const toneVars = tones.map(
               ({ css }, tone) => `--colors_${index}_${tone}: ${css};`
             );
-            if (index === 0) {
-              const primaryVars = tones.map(
-                (_, tone) =>
-                  `--colors_primary_${tone}: var(--colors_${index}_${tone});`
-              );
-              return [primaryVars, toneVars];
-            }
             if (index === hues.length - 1) {
               const secondaryVars = tones.map(
                 (_, tone) =>
@@ -68,7 +65,17 @@ export const colorLogic = kea<colorLogicType>([
           ({ css }, index) => `--colors_black_${index}: ${css};`
         );
 
+        const primaryVars = (primary ?? hues.at(0) ?? []).map(
+          ({ css }, index) => `--colors_primary_${index}: ${css};`
+        );
+        
+        const secondaryVars = (secondary ?? hues.at(-1) ?? []).map(
+          ({ css }, index) => `--colors_secondary_${index}: ${css};`
+        );
+
         return [
+          ...primaryVars,
+          ...secondaryVars,
           ...hueVars,
           `--colors_white: ${greys.at(0)?.css};`,
           `--colors_black: ${greys.at(-1)?.css};`,
@@ -90,17 +97,13 @@ export function connectColorLogic<T extends Logic = Logic>({
   colors,
   listenerAction,
 }: {
-  greys: (
-    values: T["values"],
-  ) => Color[];
-  colors: (
-    values: T["values"],
-  ) => Color[][];
+  greys: (values: T["values"]) => Color[];
+  colors: (values: T["values"]) => Color[][];
   listenerAction: keyof T["actions"];
 }): LogicBuilder<T> {
   return (logic) => {
-    console.log(logic)
-    const savedValues = window.localStorage.getItem(`${logic.key}` || logic.pathString);
+    const storageKey = logic.key ? `${logic.key}` : logic.pathString;
+    const savedValues = window.localStorage.getItem(storageKey);
     if (savedValues !== null) {
       defaults(JSON.parse(savedValues))(logic);
     }
@@ -117,9 +120,9 @@ export function connectColorLogic<T extends Logic = Logic>({
       colorLogic.actions.setColors(colors(values));
       colorLogic.actions.setGreys(greys(values));
     })(logic);
-    beforeUnmount(({values}) => {
-      window.localStorage.setItem(`${logic.key}` || logic.pathString, JSON.stringify(values))
-    })(logic)
+    beforeUnmount(({ values }) => {
+      window.localStorage.setItem(storageKey, JSON.stringify(values));
+    })(logic);
   };
 }
 
@@ -127,6 +130,94 @@ function getDefaults<T extends keyof colorLogicType["defaults"]>(
   property: T
 ): colorLogicType["defaults"][T] {
   // these defaults were pulled directly from the redux dev tools after using the tool - to change them, I highly recommend doing the same
+  const primary = [
+    {
+      hue: 187,
+      chroma: 0.08,
+      lightness: 99,
+      css: "oklch(99% 0.08 187deg)",
+    },
+    {
+      hue: 190.76,
+      chroma: 0.13,
+      lightness: 87.02,
+      css: "oklch(87.02% 0.13 190.76deg)",
+    },
+    {
+      hue: 193.72,
+      chroma: 0.19,
+      lightness: 72.88,
+      css: "oklch(72.88% 0.19 193.72deg)",
+    },
+    {
+      hue: 196.04,
+      chroma: 0.25,
+      lightness: 57.44,
+      css: "oklch(57.44% 0.25 196.04deg)",
+    },
+    {
+      hue: 197.83,
+      chroma: 0.31,
+      lightness: 41.56,
+      css: "oklch(41.56% 0.31 197.83deg)",
+    },
+    {
+      hue: 199.12,
+      chroma: 0.37,
+      lightness: 26.12,
+      css: "oklch(26.12% 0.37 199.12deg)",
+    },
+    {
+      hue: 199.95,
+      chroma: 0.43,
+      lightness: 11.98,
+      css: "oklch(11.98% 0.43 199.95deg)",
+    },
+  ];
+  const secondary = [
+    {
+      hue: 7,
+      chroma: 0.08,
+      lightness: 99,
+      css: "oklch(99% 0.08 7deg)",
+    },
+    {
+      hue: 10.76,
+      chroma: 0.13,
+      lightness: 87.02,
+      css: "oklch(87.02% 0.13 10.76deg)",
+    },
+    {
+      hue: 13.72,
+      chroma: 0.19,
+      lightness: 72.88,
+      css: "oklch(72.88% 0.19 13.72deg)",
+    },
+    {
+      hue: 16.04,
+      chroma: 0.25,
+      lightness: 57.44,
+      css: "oklch(57.44% 0.25 16.04deg)",
+    },
+    {
+      hue: 17.83,
+      chroma: 0.31,
+      lightness: 41.56,
+      css: "oklch(41.56% 0.31 17.83deg)",
+    },
+    {
+      hue: 19.12,
+      chroma: 0.37,
+      lightness: 26.12,
+      css: "oklch(26.12% 0.37 19.12deg)",
+    },
+    {
+      hue: 19.95,
+      chroma: 0.43,
+      lightness: 11.98,
+      css: "oklch(11.98% 0.43 19.95deg)",
+    },
+  ];
   const defaults: colorLogicType["defaults"] = {
     colors: [
       [
@@ -173,50 +264,7 @@ function getDefaults<T extends keyof colorLogicType["defaults"]>(
           css: "oklch(11.98% 0.43 167.54999999999998deg)",
         },
       ],
-      [
-        {
-          hue: 187,
-          chroma: 0.08,
-          lightness: 99,
-          css: "oklch(99% 0.08 187deg)",
-        },
-        {
-          hue: 190.76,
-          chroma: 0.13,
-          lightness: 87.02,
-          css: "oklch(87.02% 0.13 190.76deg)",
-        },
-        {
-          hue: 193.72,
-          chroma: 0.19,
-          lightness: 72.88,
-          css: "oklch(72.88% 0.19 193.72deg)",
-        },
-        {
-          hue: 196.04,
-          chroma: 0.25,
-          lightness: 57.44,
-          css: "oklch(57.44% 0.25 196.04deg)",
-        },
-        {
-          hue: 197.83,
-          chroma: 0.31,
-          lightness: 41.56,
-          css: "oklch(41.56% 0.31 197.83deg)",
-        },
-        {
-          hue: 199.12,
-          chroma: 0.37,
-          lightness: 26.12,
-          css: "oklch(26.12% 0.37 199.12deg)",
-        },
-        {
-          hue: 199.95,
-          chroma: 0.43,
-          lightness: 11.98,
-          css: "oklch(11.98% 0.43 199.95deg)",
-        },
-      ],
+      primary,
       [
         {
           hue: 219.39999999999998,
@@ -261,50 +309,7 @@ function getDefaults<T extends keyof colorLogicType["defaults"]>(
           css: "oklch(11.98% 0.43 232.34999999999997deg)",
         },
       ],
-      [
-        {
-          hue: 7,
-          chroma: 0.08,
-          lightness: 99,
-          css: "oklch(99% 0.08 7deg)",
-        },
-        {
-          hue: 10.76,
-          chroma: 0.13,
-          lightness: 87.02,
-          css: "oklch(87.02% 0.13 10.76deg)",
-        },
-        {
-          hue: 13.72,
-          chroma: 0.19,
-          lightness: 72.88,
-          css: "oklch(72.88% 0.19 13.72deg)",
-        },
-        {
-          hue: 16.04,
-          chroma: 0.25,
-          lightness: 57.44,
-          css: "oklch(57.44% 0.25 16.04deg)",
-        },
-        {
-          hue: 17.83,
-          chroma: 0.31,
-          lightness: 41.56,
-          css: "oklch(41.56% 0.31 17.83deg)",
-        },
-        {
-          hue: 19.12,
-          chroma: 0.37,
-          lightness: 26.12,
-          css: "oklch(26.12% 0.37 19.12deg)",
-        },
-        {
-          hue: 19.95,
-          chroma: 0.43,
-          lightness: 11.98,
-          css: "oklch(11.98% 0.43 19.95deg)",
-        },
-      ],
+      secondary,
     ],
     greys: [
       {
@@ -362,6 +367,8 @@ function getDefaults<T extends keyof colorLogicType["defaults"]>(
         css: "oklch(1% 0.017 197deg)",
       },
     ],
+    primaryColor: primary,
+    secondaryColor: secondary,
   };
 
   return defaults[property];

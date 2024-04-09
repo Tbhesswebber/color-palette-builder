@@ -5,7 +5,7 @@ import { Field } from "../../forms/Field";
 import { RangeInput } from "../../forms/RangeInput";
 import { Code } from "../../typography/code";
 import { ControlGridArea, useRangeGrid } from "./hooks/useRangeGrid";
-import { BezierCurve } from "../../forms/BezierCurve";
+import { BezierCurve, BezierValue } from "../../forms/BezierCurve";
 import { oklchImplicitFormLogic } from "../../../logics/oklchImplicitLogic";
 import { VisuallyHidden } from "../../a11y/VisuallyHidden";
 
@@ -137,82 +137,89 @@ export function ColorForm() {
           </Field>
         </Grid>
 
-          <Tabs>
-            <Tab title="Chroma">
-              <Field
-                name={"chromaFormula"}
-                label={<VisuallyHidden>Chroma Shift</VisuallyHidden>}
-                hint={
-                  <>
-                    The <Code>x</Code>-axis represents the tint progression
-                    <br />
-                    The <Code>y</Code>-axis represents the chroma
-                  </>
-                }
-                stack
-                width={contentWidth}
-                flex="grow"
-                align={"center"}
-              >
-                {({ value, onChange }) => (
-                  <BezierCurve
-                    value={value}
-                    handleChange={onChange}
-                  />
-                )}
-              </Field>
-            </Tab>
+        <Tabs>
+          <Tab title="Chroma">
+            <Field
+              name={"chromaFormula"}
+              label={<VisuallyHidden>Chroma Shift</VisuallyHidden>}
+              hint={
+                <>
+                  The <Code>x</Code>-axis represents the tint progression
+                  <br />
+                  The <Code>y</Code>-axis represents the chroma
+                </>
+              }
+              stack
+              width={contentWidth}
+              flex="grow"
+              align={"center"}
+            >
+              {({ value, onChange }) => (
+                <BezierCurve
+                  value={value}
+                  handleChange={(value: BezierValue) => {
+                    value.splice(0, 1, 0);
+                    value.splice(-2, 1, 1);
+                    onChange(value);
+                  }}
+                  allowNodeEditing
+                />
+              )}
+            </Field>
+          </Tab>
 
-            <Tab title="Lightness">
-              <Field
-                name={"lightnessFormula"}
-                label={<VisuallyHidden>Lightness Shift</VisuallyHidden>}
-                hint={
-                  <>
-                    The <Code>x</Code>-axis represents the tint progression
-                    <br />
-                    The <Code>y</Code>-axis represents the lightness
-                  </>
-                }
-                stack
-                width={contentWidth}
-                flex="grow"
-                align={"center"}
-              >
-                {({ value, onChange }) => (
-                  <BezierCurve
-                    value={value}
-                    handleChange={onChange}
-                  />
-                )}
-              </Field>
-            </Tab>
+          <Tab title="Lightness">
+            <Field
+              name={"lightnessFormula"}
+              label={<VisuallyHidden>Lightness Shift</VisuallyHidden>}
+              hint={
+                <>
+                  The <Code>x</Code>-axis represents the tint progression
+                  <br />
+                  The <Code>y</Code>-axis represents the lightness
+                </>
+              }
+              stack
+              width={contentWidth}
+              flex="grow"
+              align={"center"}
+            >
+              {({ value, onChange }) => (
+                <BezierCurve value={value} handleChange={onChange} />
+              )}
+            </Field>
+          </Tab>
 
-            <Tab title="Hue">
-              <Field
-                name={"hueFormula"}
-                label={<VisuallyHidden>Hue Shift</VisuallyHidden>}
-                hint={
-                  <>
-                    The <Code>x</Code>-axis represents the tint progression
-                    <br />
-                    The <Code>y</Code>-axis represents the hue
-                  </>
-                }
-                stack
-                width={contentWidth}
-                flex="grow"
-                align={"center"}
-              >
-                {({ value, onChange }) => (
-                  <BezierCurve
-                    value={value}
-                    handleChange={onChange}
-                  />
-                )}
-              </Field>
-            </Tab>
-          </Tabs>
+          <Tab title="Hue">
+            <Field
+              name={"hueFormula"}
+              label={<VisuallyHidden>Hue Shift</VisuallyHidden>}
+              hint={
+                <>
+                  The <Code>x</Code>-axis represents the tint progression
+                  <br />
+                  The <Code>y</Code>-axis represents the hue
+                </>
+              }
+              stack
+              width={contentWidth}
+              flex="grow"
+              align={"center"}
+            >
+              {({ value, onChange }) => (
+                <BezierCurve
+                  value={value}
+                  handleChange={(value: BezierValue) => {
+                    value.splice(0, 1, 0);
+                    value.splice(-2, 1, 1);
+                    onChange(value);
+                  }}
+                  allowNodeEditing
+                />
+              )}
+            </Field>
+          </Tab>
+        </Tabs>
       </Box>
     </Form>
   );

@@ -1,6 +1,6 @@
 import "react-bezier-curve-editor/index.css";
 import React from "react";
-import { BezierCurveEditor } from "react-bezier-curve-editor";
+import { BezierCurveEditor, BezierCurveEditorProps, ExpandedValueType, ValueType } from "react-bezier-curve-editor";
 import { styled } from "styled-components";
 import { Box, BoxProps } from "grommet";
 import { themeColor } from "../../utils/styled";
@@ -38,7 +38,7 @@ const Container = styled(Box)`
     transparent 75%
   );
   --bce-colors-outerarea: transparent;
-  --bce-colors-axisline: ${themeColor("background")};
+  --bce-colors-axisline: transparent;
   --bce-colors-handle-fixed: ${themeColor("text")};
   --bce-colors-handle-start: ${themeColor("primary")};
   --bce-colors-handle-end: ${themeColor("secondary")};
@@ -47,21 +47,42 @@ const Container = styled(Box)`
   --bce-colors-handle-active-shadow: rgba(0, 0, 0, 0.25);
 `;
 
-export type BezierValue = [number, number, number, number];
+export type BezierValue = ExpandedValueType;
+export type SimpleBezierValue = ValueType;
 
-export interface BezierCurveProps extends BoxProps {
-  value: BezierValue;
-  handleChange: (value: BezierValue) => void;
+export interface BezierCurveProps extends BoxProps, Pick<BezierCurveEditorProps, "value" | "allowNodeEditing"> {
+  handleChange: BezierCurveEditorProps["onChange"]
 }
 
-export const BezierCurve = React.forwardRef(function BezierCurveComponent({value, handleChange, ...props}: BezierCurveProps, ref: React.Ref<HTMLDivElement>) {
+export const BezierCurve = React.forwardRef(function BezierCurveComponent({value, handleChange, allowNodeEditing, ...props}: BezierCurveProps, ref: React.Ref<HTMLDivElement>) {
 
-  return (
-    <Container
-      ref={ref}
-      {...props}
-    >
-      <BezierCurveEditor value={value} onChange={handleChange} size={200} />
-    </Container>
-  );
+  if (allowNodeEditing && value?.length === 8) {
+    value satisfies ExpandedValueType;
+    allowNodeEditing satisfies true;
+    return (
+      <Container ref={ref} {...props}>
+        <BezierCurveEditor
+          value={value}
+          onChange={handleChange as (value: ExpandedValueType) => void}
+          size={200}
+          allowNodeEditing={allowNodeEditing}
+        />
+      </Container>
+    );
+  } else if (value && value.length === 4) {
+    value satisfies ValueType;
+    return (
+      <Container ref={ref} {...props}>
+        <BezierCurveEditor
+          value={value}
+          onChange={handleChange as (value: ValueType) => void}
+          size={200}
+          allowNodeEditing={false}
+        />
+      </Container>
+    );
+  }
+
+  throw new Error("An unknown error occurred in the BezierCurveEditor Component")
+
 })

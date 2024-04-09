@@ -1,7 +1,10 @@
 import { Bezier, Point } from "bezier-js";
 import { BuiltLogic, kea, path, selectors } from "kea";
 import { forms } from "kea-forms";
-import { BezierValue } from "../components/forms/BezierCurve";
+import {
+  BezierValue,
+  SimpleBezierValue,
+} from "../components/forms/BezierCurve";
 import { round } from "../utils/format";
 
 import { hueList } from "../utils/hueSpread";
@@ -21,7 +24,7 @@ export interface ColorFormFields {
   centerPoint: number;
   chromaFormula: number | BezierValue;
   hueFormula?: number | BezierValue;
-  lightnessFormula: number | BezierValue;
+  lightnessFormula: number | [number, number, number, number];
   tintCount: number;
   analogousHueCount: number;
   analogousHueGap: number;
@@ -29,13 +32,12 @@ export interface ColorFormFields {
   complementaryHueGap: number;
 }
 
-const linearBezier: BezierValue = [0.25, 0.25, 0.75, 0.75];
 
 const defaultValues: Required<ColorFormFields> = {
   centerPoint: 197,
-  hueFormula: linearBezier,
-  lightnessFormula: linearBezier,
-  chromaFormula: linearBezier,
+  hueFormula: [0, 0.5, 0.5, 0.75, 0.15, 0.2, 1, 0.1],
+  lightnessFormula: [0, 0.35, 1, 0.5],
+  chromaFormula: [0, 0.15, 0.3, 0.35, 0.5, 0.45, 1, 0.3],
   tintCount: 7,
   analogousHueCount: 3,
   analogousHueGap: 0.36,
@@ -57,34 +59,38 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
     hueFormula: [
       (s) => [s.colorForm],
       ({ hueFormula }) => {
-        let x1, y1, x2, y2;
+        let x0, y0, x1, y1, x2, y2, x3, y3;
         if (typeof hueFormula === "number") {
-          [x1, y1, x2, y2] = [0.25, 0.25, 0.75, 0.75];
+          [x0, y0, x1, y1, x2, y2, x3, y3] = [
+            0, 0, 0.25, 0.25, 0.75, 0.75, 1, 1,
+          ];
         } else {
-          [x1, y1, x2, y2] = hueFormula;
+          [x0, y0, x1, y1, x2, y2, x3, y3] = hueFormula;
         }
         return new Bezier([
-          { x: 0, y: 0 },
+          { x: x0, y: y0 },
           { x: x1, y: y1 },
           { x: x2, y: y2 },
-          { x: 1, y: 1 },
+          { x: x3, y: y3 },
         ]);
       },
     ],
     chromaFormula: [
       (s) => [s.colorForm],
       ({ chromaFormula }) => {
-        let x1, y1, x2, y2;
+        let x0, y0, x1, y1, x2, y2, x3, y3;
         if (typeof chromaFormula === "number") {
-          [x1, y1, x2, y2] = [0.25, 0.25, 0.75, 0.75];
+          [x0, y0, x1, y1, x2, y2, x3, y3] = [
+            0, 0, 0.25, 0.25, 0.75, 0.75, 1, 1,
+          ];
         } else {
-          [x1, y1, x2, y2] = chromaFormula;
+          [x0, y0, x1, y1, x2, y2, x3, y3] = chromaFormula;
         }
         return new Bezier([
-          { x: 0, y: 0 },
+          { x: x0, y: y0 },
           { x: x1, y: y1 },
           { x: x2, y: y2 },
-          { x: 1, y: 1 },
+          { x: x3, y: y3 },
         ]);
       },
     ],
@@ -112,7 +118,7 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
         analogousHueCount: count,
         analogousHueGap: gap,
       }: ColorFormFields) => ({
-        gap: Number(gap) * (180 / Math.max((count - 1), 1)),
+        gap: Number(gap) * (180 / Math.max(count - 1, 1)),
         count: Number(count),
       }),
     ],
@@ -133,7 +139,7 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
     lightnessShifts: [
       (s) => [s.lightnessFormula, s.tintCount],
       (lightness, tintCount) => {
-        return lightness.getLUT(tintCount).reverse();
+        return lightness.getLUT(tintCount);
       },
     ],
     chromaShifts: [
@@ -175,20 +181,23 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
 function calculateColors(
   values: oklchImplicitFormLogicType["values"]
 ): [...Color[]][] {
-  const { lightnessShifts, chromaShifts, hueShifts, tintCount, hues } = values;
-  const linearShifts = new Bezier(linearBezier).getLUT(tintCount);
+  const {
+    lightnessShifts,
+    chromaShifts,
+    hueShifts,
+    tintCount,
+    hues,
+  } = values;
 
   return hues.map((hue) =>
     Array.from({ length: tintCount }, (__, tintIndex) => {
       const values = {
-        hue:
-          round(
-            ((hueShifts[tintIndex].y - linearShifts[tintIndex].y) /
-              linearShifts[tintIndex].y) *
-              10
-          ) + hue,
-        chroma: round((chromaShifts[tintIndex].y + 0.2) * 0.4),
-        lightness: round(lightnessShifts[tintIndex].y * 99),
+        // normalize at the center of the y axis
+        hue: round((hueShifts[tintIndex].y - 0.5) * 10 + hue),
+        // max out at 0.4 - need to add clipping eventually
+        chroma: round(chromaShifts[tintIndex].y * 0.4),
+        // 100 and 0 lightness are black and white - force colors to be between them
+        lightness: round(99.9 - lightnessShifts[tintIndex].y * 99.8),
       };
 
       return {
@@ -201,7 +210,7 @@ function calculateColors(
 
 function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
   const { tintCount, lightnessFormula, centerPoint: hue } = values;
-  const lightnesses = lightnessFormula.getLUT(tintCount + 2).reverse()
+  const lightnesses = lightnessFormula.getLUT(tintCount + 2).reverse();
 
   const colors = Array.from({ length: tintCount }, (_, index) => {
     const values = {
