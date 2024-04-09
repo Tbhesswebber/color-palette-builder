@@ -1,23 +1,13 @@
-import { FieldProps, Form } from "kea-forms";
+import { Form } from "kea-forms";
 import React from "react";
-import { Box, Grid, ResponsiveContext, Tab, Tabs, TextInput } from "grommet";
+import { Box, Grid, Tab, Tabs, TextInput } from "grommet";
 import { Field } from "../../forms/Field";
 import { RangeInput } from "../../forms/RangeInput";
-import { FormulaInput } from "../../forms/FormulaInput";
 import { Code } from "../../typography/code";
 import { ControlGridArea, useRangeGrid } from "./hooks/useRangeGrid";
 import { BezierCurve } from "../../forms/BezierCurve";
 import { oklchImplicitFormLogic } from "../../../logics/oklchImplicitLogic";
-import { styled } from "styled-components";
-import { useMeasure } from "react-use";
 import { VisuallyHidden } from "../../a11y/VisuallyHidden";
-
-const CurveContainer = styled(Box)`
-  flex-wrap: wrap;
-  /* 24px at 650px screen width, 192px at 1300px screen width */
-  column-gap: clamp(24px, -9rem + 25.846153846153847vw, 96px);
-  row-gap: 24px;
-`;
 
 const contentWidth = {
   min: "fit-content",
@@ -26,21 +16,15 @@ const contentWidth = {
 export function ColorForm() {
   const rangeGrid = useRangeGrid();
 
-  const [chromaRef, { height: chromaHeight }] = useMeasure<HTMLDivElement>();
-  const [lightnessRef, { height: lightnessHeight }] =
-    useMeasure<HTMLDivElement>();
-  const [hueRef, { height: hueHeight }] = useMeasure<HTMLDivElement>();
-  const [containerRef, { height: containerHeight }] =
-    useMeasure<HTMLDivElement>();
-
   return (
     <Form logic={oklchImplicitFormLogic} formKey="colorForm" enableFormOnSubmit>
-      <Box direction="row" flex gap="medium" align="center" justify="center">
+      <Box direction="row" gap="medium" align="center" justify="center" wrap>
         <Grid
           columns={rangeGrid.columns}
           rows={rangeGrid.rows}
           areas={rangeGrid.areas}
           gap="medium"
+          justify="start"
         >
           <Field
             name={ControlGridArea.TintCount}
@@ -153,7 +137,6 @@ export function ColorForm() {
           </Field>
         </Grid>
 
-        <CurveContainer ref={containerRef} direction={"row"}>
           <Tabs>
             <Tab title="Chroma">
               <Field
@@ -175,7 +158,6 @@ export function ColorForm() {
                   <BezierCurve
                     value={value}
                     handleChange={onChange}
-                    ref={chromaRef}
                   />
                 )}
               </Field>
@@ -199,7 +181,6 @@ export function ColorForm() {
               >
                 {({ value, onChange }) => (
                   <BezierCurve
-                    ref={lightnessRef}
                     value={value}
                     handleChange={onChange}
                   />
@@ -227,13 +208,11 @@ export function ColorForm() {
                   <BezierCurve
                     value={value}
                     handleChange={onChange}
-                    ref={hueRef}
                   />
                 )}
               </Field>
             </Tab>
           </Tabs>
-        </CurveContainer>
       </Box>
     </Form>
   );

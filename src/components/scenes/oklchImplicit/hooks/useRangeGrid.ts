@@ -1,5 +1,6 @@
 import { ResponsiveContext } from "grommet";
 import React from "react";
+import { useWindowSize } from "react-use";
 
 export const enum ControlGridArea {
   TintCount = "tintCount",
@@ -31,26 +32,27 @@ const largeGridAreas = [
 
 export function useRangeGrid() {
   const size = React.useContext(ResponsiveContext);
+  const {width} = useWindowSize();
 
   return React.useMemo(() => {
-    if (size === "small") {
+    if (size === "small" || width <= 1130) {
       return {
         columns: ["1fr"],
-        rows: ["fit-content"],
+        rows: ["auto"],
         areas: smallGridAreas,
       };
     }
     if (size === "medium") {
       return {
         columns: ["1fr", "1fr"],
-        rows: ["fit-content"],
+        rows: ["auto"],
         areas: mediumGridAreas,
       };
     }
     return {
       columns: ["1fr", "1fr"],
-      rows: ["fit-content"],
+      rows: ["auto"],
       areas: largeGridAreas,
     };
-  }, [size]);
+  }, [size, width]);
 }

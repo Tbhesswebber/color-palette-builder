@@ -105,7 +105,7 @@ export function Field(props: FieldProps) {
           <Box
             fill={!boxProps.width}
             width="fit-content"
-            justify="center"
+            justify="start"
             align="center"
           >
             <Label level={4} htmlFor={inputId}>

@@ -60,7 +60,6 @@ export function RangeInput({
     <RangeInputContainer
       direction="row"
       align="start"
-      pad="small"
       gap={"small"}
       fill
     >

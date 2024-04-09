@@ -5,4 +5,9 @@ export const enum Font {
 }
 
 export type TShirtSize = "small" | "medium" | "large";
-export type TShirtSizeExtended = "xsmall" | "xlarge" | TShirtSize;
+export type TShirtSizeExtended =
+  | "xsmall"
+  | "xlarge"
+  | "xxsmall"
+  | "xxlarge"
+  | TShirtSize;

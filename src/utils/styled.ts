@@ -1,6 +1,7 @@
 import { DefaultTheme } from "styled-components";
 import { TShirtSize, TShirtSizeExtended } from "../theme/constants";
 import { ThemeType } from "../theme/theme";
+import { GlobalTheme } from "../theme/themeParts/global";
 
 export function props<T, K extends keyof T = keyof T>(
   key: K,
@@ -22,7 +23,7 @@ export function themeMode<T, K = T>(
 }
 
 export function themeColor(
-  color: keyof Required<ThemeType["global"]>["colors"]
+  color: keyof GlobalTheme["colors"]
 ): (props: { theme: DefaultTheme }) => string {
   return ({ theme }) => {
     if (!theme) return "";
@@ -38,20 +39,44 @@ export function themeColor(
 
     if (retrievedValue in theme.global.colors) {
       return themeColor(
-        retrievedValue as keyof Required<ThemeType["global"]>["colors"]
+        retrievedValue as keyof GlobalTheme["colors"]
       )({ theme });
     }
     return retrievedValue;
   };
 }
 
+export function themeElevation(
+  darkLevel:
+    | keyof GlobalTheme["elevation"]["dark"]
+    | keyof GlobalTheme["elevation"]["light"]
+): (props: { theme: DefaultTheme }) => string {
+  return ({ theme }) => {
+    if (!theme) return "";
+    const isDarkMode = !!theme["dark"];
+    const modeValue =
+      theme.global.elevation[isDarkMode ? "dark" : "light"][darkLevel];
+
+    return modeValue;
+  };
+}
+
 export function themeEdgeSize(
-  size: keyof Required<ThemeType["global"]>["edgeSize"],
+  size: keyof GlobalTheme["edgeSize"],
   defaultValue: string = ""
 ): (props: { theme: DefaultTheme }) => string {
   return ({ theme }) =>{
     const value = theme.global.edgeSize
-      ? theme.global.edgeSize[size] ?? defaultValue
-      : defaultValue;
+    ? theme.global.edgeSize[size] ?? defaultValue
+    : defaultValue;
     return value;
 }}
+
+export function themeText(
+  size: keyof GlobalTheme["fontSize"],
+  defaultValue: { size: string; height: string } = { size: "", height: "" }
+): (props: { theme: DefaultTheme }) => { size: string; height: string } {
+  return ({ theme }) => {
+    return {...defaultValue, ...theme.global.fontSize[size]};
+  };
+}
