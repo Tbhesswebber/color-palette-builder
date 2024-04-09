@@ -1,8 +1,10 @@
 import {
   actions,
   afterMount,
+  beforeUnmount,
   BuiltLogic,
   connect,
+  defaults,
   events,
   kea,
   KeaLogicType,
@@ -88,11 +90,20 @@ export function connectColorLogic<T extends Logic = Logic>({
   colors,
   listenerAction,
 }: {
-  greys: (values: T["values"]) => Color[];
-  colors: (values: T["values"]) => Color[][];
-  listenerAction: keyof T["actions"]
+  greys: (
+    values: T["values"],
+  ) => Color[];
+  colors: (
+    values: T["values"],
+  ) => Color[][];
+  listenerAction: keyof T["actions"];
 }): LogicBuilder<T> {
   return (logic) => {
+    console.log(logic)
+    const savedValues = window.localStorage.getItem(`${logic.key}` || logic.pathString);
+    if (savedValues !== null) {
+      defaults(JSON.parse(savedValues))(logic);
+    }
     connect(colorLogic)(logic);
     listeners(({ values }) => ({
       [listenerAction as string]: async (_, breakpoint) => {
@@ -106,6 +117,9 @@ export function connectColorLogic<T extends Logic = Logic>({
       colorLogic.actions.setColors(colors(values));
       colorLogic.actions.setGreys(greys(values));
     })(logic);
+    beforeUnmount(({values}) => {
+      window.localStorage.setItem(`${logic.key}` || logic.pathString, JSON.stringify(values))
+    })(logic)
   };
 }
 

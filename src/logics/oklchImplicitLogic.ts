@@ -1,11 +1,12 @@
 import { Bezier, Point } from "bezier-js";
-import { kea, path, selectors } from "kea";
+import { BuiltLogic, kea, path, selectors } from "kea";
 import { forms } from "kea-forms";
 import { BezierValue } from "../components/forms/BezierCurve";
 import { round } from "../utils/format";
 
 import { hueList } from "../utils/hueSpread";
 import { connectColorLogic } from "./colorLogic";
+import { colorLogicType } from "./colorLogicType";
 
 import type { oklchImplicitFormLogicType } from "./oklchImplicitLogicType";
 
