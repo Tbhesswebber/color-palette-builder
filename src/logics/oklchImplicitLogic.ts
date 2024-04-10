@@ -173,11 +173,24 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
 function calculateColors(
   values: oklchImplicitFormLogicType["values"]
 ): [...Color[]][] {
-  const { lightnessShifts, chromaShifts, hueShifts, tintCount, hues, centerPoint } = values;
+  const {
+    lightnessShifts,
+    chromaShifts,
+    hueShifts,
+    tintCount,
+    hues,
+    centerPoint,
+    colorForm: { analogousHueCount, complementaryHueCount },
+  } = values;
 
-  return hues.map((hue) =>
-    Array.from({ length: tintCount }, (__, tintIndex) => {
-      const values = {
+  return hues.map((hue, hueIndex) =>
+    {
+      const isPrimary = centerPoint === hue;
+      const isSecondary = hueIndex === analogousHueCount ||
+        (tintCount === analogousHueCount && hueIndex === tintCount - 1);
+      
+      return Array.from({ length: tintCount }, (__, tintIndex) => {
+      const values: Omit<Color, "css"> = {
         primary: centerPoint === hue,
         // normalize at the center of the y axis
         hue: round((hueShifts[tintIndex].y - 0.5) * 10 + hue),
@@ -187,12 +200,22 @@ function calculateColors(
         lightness: round(99.9 - lightnessShifts[tintIndex].y * 99.8),
       };
 
+      if (isPrimary) {
+        values.primary = true;
+        values.paletteName = "primary";
+      }
+
+      if (isSecondary) {
+        values.secondary = true;
+        values.paletteName = "secondary";
+      }
+
       return {
         ...values,
         css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
       };
-    })
-  );
+    });
+});
 }
 
 function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
