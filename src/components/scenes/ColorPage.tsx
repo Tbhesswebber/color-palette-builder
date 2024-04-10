@@ -2,17 +2,6 @@ import { Box } from "grommet";
 import { Palette } from "../Palette";
 import React, { PropsWithChildren } from "react";
 import { Color, useColorLogicValues } from "../../logics/colorLogic";
-import { styled } from "styled-components";
-
-const PaletteContainer = styled(Box)`
-  & > div {
-    flex-grow: 1;
-    transition: flex-grow 200ms ease-in-out;
-  }
-  & > div:hover {
-    flex-grow: 1.25;
-  }
-`;
 
 export function ColorPage({ children }: PropsWithChildren): JSX.Element {
   const { greys, colors, tintCount, namedColors: allNamedColors } = useColorLogicValues();
@@ -23,7 +12,7 @@ export function ColorPage({ children }: PropsWithChildren): JSX.Element {
   return (
     <>
       {children}
-      <PaletteContainer
+      <Box
         direction="row"
         basis="100%"
         height={{ min: "300px" }}
@@ -40,7 +29,7 @@ export function ColorPage({ children }: PropsWithChildren): JSX.Element {
             count={tintCount}
           />
         ))}
-      </PaletteContainer>
+      </Box>
       {namedColors.length > 0 && <Box
         direction="row"
         basis="100%"

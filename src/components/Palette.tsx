@@ -22,6 +22,8 @@ const Swatch = styled(Box)`
     margin: 0;
     padding: 0;
     line-height: 1em;
+    font-size: clamp(8.5px, 5.67cqw + 0rem, 17px);
+
     // approximate light or dark text based on background
     background: inherit;
     color: transparent;
@@ -29,29 +31,21 @@ const Swatch = styled(Box)`
     filter: invert(100%) grayscale(100%) contrast(9000%);
 
     visibility: hidden;
-    /* display: none; */
     opacity: 0;
     will-change: opacity, display;
-    transition: opacity 200ms ease-in-out;
+    transition: opacity 2000ms ease-in-out;
+    white-space: nowrap;
   }
 
   &:hover code {
     visibility: visible;
-    /* display: block; */
     opacity: 1;
     transition: opacity 150ms ease-in-out;
   }
 
-  @container swatch (min-width: 0px) {
-    code {
-      line-height: 40cqh;
-      font-size: 35cqh;
-    }
-  }
-
-  @container swatch (max-height: 40px) {
-    code {
-      font-weight: 650;
+  @container swatch (max-width: 150px) {
+    && code {
+      visibility: hidden;
     }
   }
 `;
@@ -74,7 +68,7 @@ export function Palette({ count, prefix }: PaletteProps) {
           return (
           <Swatch
             flex="grow"
-            basis="0%"
+            basis="fit-content"
             background={color}
             color={color}
             align="center"
