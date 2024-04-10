@@ -74,8 +74,8 @@ export const colorLogic = kea<colorLogicType>([
       },
     ],
     cssVars: [
-      (s) => [s.colors, s.greys, s.primaryColor, s.secondaryColor],
-      (hues, greys, primary, secondary) => {
+      (s) => [s.colors, s.greys, s.primaryColor, s.secondaryColor, s.namedColors],
+      (hues, greys, primary, secondary, namedColors) => {
         const hueVars = hues
           .map((tones, index) => {
             const toneVars = tones.map(
@@ -84,21 +84,19 @@ export const colorLogic = kea<colorLogicType>([
             return [toneVars];
           })
           .flat();
+
         const greyVars = greys.map(
           ({ css }, index) => `--colors_black_${index}: ${css};`
         );
 
-        const primaryVars = (primary ?? hues.at(0) ?? []).map(
-          ({ css }, index) => `--colors_primary_${index}: ${css};`
+        const namedVars = Object.entries(namedColors).map(([name, colors]) => {
+          return colors.map(
+          ({ css }, index) => `--colors_${name}_${index}: ${css};`
         );
-
-        const secondaryVars = (secondary ?? hues.at(-1) ?? []).map(
-          ({ css }, index) => `--colors_secondary_${index}: ${css};`
-        );
+        })
 
         return [
-          ...primaryVars,
-          ...secondaryVars,
+          ...namedVars,
           ...hueVars,
           `--colors_white: ${greys.at(0)?.css};`,
           `--colors_black: ${greys.at(-1)?.css};`,
