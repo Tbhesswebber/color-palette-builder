@@ -28,6 +28,8 @@ const Swatch = styled(Box)`
     background: inherit;
     color: transparent;
     background-clip: text;
+    // avoids some edge cases where the color is too mid-tone to invert
+    text-shadow: 0px 0px 0px #0000000d;
     filter: invert(100%) grayscale(100%) contrast(9000%);
 
     visibility: hidden;
