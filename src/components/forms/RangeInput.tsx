@@ -25,6 +25,7 @@ interface RangeInputProps extends NumberInputProps {
   minLabel?: string | number;
   maxLabel?: string | number;
   showBounds?: boolean;
+  controls?: boolean;
 }
 
 const RangeInputContainer = styled(Box)`
@@ -56,6 +57,7 @@ export function RangeInput({
   maxLabel,
   showBounds,
   step,
+  controls = true,
   ...props
 }: Partial<ChildFunctionProps> & RangeInputProps) {
   const size = useContext(ResponsiveContext);
@@ -67,7 +69,7 @@ export function RangeInput({
       gap={"small"}
       fill
     >
-      <Button
+      {showBounds && <Button
         className="button"
         disabled={Number(value) <= Number(min)}
         icon={<Subtract color="control" />}
@@ -78,7 +80,7 @@ export function RangeInput({
         alignSelf="start"
         secondary
         hoverIndicator={{ elevation: "small", background: {} }}
-      />
+      />}
       <Box align="center" width="small" flex direction="column" gap="xxsmall">
         <Stack fill guidingChild={"last"} interactiveChild="last" >
           <Meter round thickness="xsmall" aria-hidden="true" />
@@ -97,7 +99,7 @@ export function RangeInput({
           {showBounds !== false && <Paragraph margin={"0"} size="small">{maxLabel ?? max}</Paragraph>}
         </Box>
       </Box>
-      <Button
+      {showBounds && <Button
         className="button"
         disabled={Number(value) >= Number(max)}
         icon={<Add color="control" />}
@@ -108,7 +110,7 @@ export function RangeInput({
         alignSelf="start"
         secondary
         hoverIndicator={{ elevation: "small", background: {} }}
-      />
+      />}
     </RangeInputContainer>
   );
 }

@@ -6,15 +6,18 @@ import {
   Heading,
   HeadingExtendedProps,
   Paragraph,
+  ParagraphExtendedProps,
   Stack,
+  Text,
+  TextExtendedProps,
 } from "grommet";
 import { styled } from "styled-components";
 
 const Label: React.FC<
-  HeadingExtendedProps & Omit<LabelHTMLAttributes<HTMLHeadingElement>, "color">
-> = styled(Heading).attrs({ as: "label" })`
-  display: block;
+  ParagraphExtendedProps & Omit<LabelHTMLAttributes<HTMLLabelElement>, "color">
+> = styled(Paragraph).attrs({ forwardedAs: "label" })`
   align-self: stretch;
+  line-height: 1em;
 `;
 
 interface FieldProps
@@ -72,7 +75,7 @@ export function Field(props: FieldProps) {
         return (
           <Box {...boxProps} fill={!boxProps.width} gridArea={area}>
             <StackingBox fill={!boxProps.width}>
-              <Label level={4} htmlFor={inputId}>
+              <Label size="small" htmlFor={inputId}>
                 {label}
               </Label>
               {kids as React.ReactNode}
@@ -108,7 +111,7 @@ export function Field(props: FieldProps) {
             justify="start"
             align="center"
           >
-            <Label level={4} htmlFor={inputId}>
+            <Label size={"small"} htmlFor={inputId}>
               {label}
             </Label>
             {kids as React.ReactNode}

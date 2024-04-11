@@ -2,12 +2,14 @@ import React from 'react'
 import {
   HeadingExtendedProps,
   ParagraphExtendedProps,
+  TextInputProps,
   ThemeContext,
   ThemeType as GrommetThemeType,
 } from "grommet";
 import { themeColor, themeEdgeSize, themeElevation, themeMode, themeText } from '../utils/styled';
 import { global, GlobalTheme } from './themeParts/global';
 import {css} from "styled-components"
+import { TShirtSize, TShirtSizeExtended } from './constants';
 
 type SafeThemeType = {
   theme: {
@@ -101,6 +103,26 @@ export const customTheme = {
     },
   },
   paragraph: {
+    small: {
+      ...global.fontSize.small,
+      maxWidth: "336px",
+    },
+    medium: {
+      ...global.fontSize.medium,
+      maxWidth: "432px",
+    },
+    large: {
+      ...global.fontSize.large,
+      maxWidth: "528px",
+    },
+    xlarge: {
+      ...global.fontSize.xlarge,
+      maxWidth: "624px",
+    },
+    xxlarge: {
+      ...global.fontSize.xxlarge,
+      maxWidth: "816px",
+    },
     extend: ({ margin }: ParagraphExtendedProps) =>
       margin
         ? ""
@@ -172,6 +194,15 @@ export const customTheme = {
   },
   text: {
     ...global.fontSize,
+  },
+  textInput: {
+    extend: ({ size = "medium" }: TextInputProps) => `
+      padding: ${
+        global.edgeSize[
+          ["xxsmall", "xsmall", "small"].includes(size) ? "xxsmall" : "xsmall"
+        ]
+      };
+    `,
   },
 } as const satisfies GrommetThemeType;
 
