@@ -14,8 +14,8 @@ import {
 import { styled } from "styled-components";
 
 const Label: React.FC<
-  ParagraphExtendedProps & Omit<LabelHTMLAttributes<HTMLLabelElement>, "color">
-> = styled(Paragraph).attrs({ forwardedAs: "label" })`
+  HeadingExtendedProps & Omit<LabelHTMLAttributes<HTMLLabelElement>, "color">
+> = styled(Heading).attrs({ forwardedAs: "label" })`
   align-self: stretch;
   line-height: 1em;
 `;
@@ -111,7 +111,7 @@ export function Field(props: FieldProps) {
             justify="start"
             align="center"
           >
-            <Label size={"small"} htmlFor={inputId}>
+            <Label level="4" htmlFor={inputId} margin="none">
               {label}
             </Label>
             {kids as React.ReactNode}

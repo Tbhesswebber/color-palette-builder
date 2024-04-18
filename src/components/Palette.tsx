@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, BoxExtendedProps } from "grommet";
+import { Box, BoxExtendedProps} from "grommet";
 import { styled } from "styled-components";
 import { props } from "../utils/styled";
 import { Code } from "./typography/code";
 
-interface PaletteProps {
+interface PaletteProps extends BoxExtendedProps {
   count: number;
   prefix: string;
 }
@@ -17,6 +17,8 @@ const PaletteWrapper = styled(Box)`
 const Swatch = styled(Box)`
   container-name: swatch;
   container-type: size;
+  border-radius: 2px;
+  margin: 2px;
 
   code {
     margin: 0;
@@ -52,7 +54,7 @@ const Swatch = styled(Box)`
   }
 `;
 
-export function Palette({ count, prefix }: PaletteProps) {
+export function Palette({ count, prefix, ...props }: PaletteProps) {
   const cssVariables = React.useMemo(
     () =>
       Array.from({ length: count }, (_, index): string => {
@@ -87,7 +89,7 @@ export function Palette({ count, prefix }: PaletteProps) {
   );
 
   return (
-    <PaletteWrapper flex="grow" direction="column" gap="xsmall">
+    <PaletteWrapper flex="grow" direction="row" {...props}>
       {colors.map((Color, index) => <Color key={cssVariables[index]} />)}
     </PaletteWrapper>
   );
