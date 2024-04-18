@@ -54,7 +54,7 @@ export function Layout({ children }: LayoutProps) {
       <GlobalStyles vars={cssVars} />
       <AppWrapper
         direction="column"
-        pad="medium"
+        pad={{horizontal: "medium", vertical: "small"}}
         gap="medium"
         align="stretch"
         justify="stretch"

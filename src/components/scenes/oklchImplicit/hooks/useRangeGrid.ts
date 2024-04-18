@@ -1,6 +1,7 @@
 import { ResponsiveContext } from "grommet";
 import React from "react";
 import { useWindowSize } from "react-use";
+import { TShirtSize } from "../../../../theme/constants";
 
 export const enum ControlGridArea {
   TintCount = "tintCount",
@@ -30,9 +31,10 @@ const largeGridAreas = [
   [ControlGridArea.ComplementaryHueCount, ControlGridArea.ComplementaryHueGap],
 ];
 
-export function useRangeGrid() {
-  const size = React.useContext(ResponsiveContext);
+export function useRangeGrid(currentSize?: TShirtSize) {
+  const themeSize = React.useContext(ResponsiveContext);
   const {width} = useWindowSize();
+  const size = currentSize ?? themeSize;
 
   return React.useMemo(() => {
     if (size === "small" || width <= 1130) {

@@ -1,43 +1,104 @@
-import { Box } from "grommet";
+import { Box, Heading } from "grommet";
 import { Palette } from "../Palette";
 import React, { PropsWithChildren } from "react";
-import { useColorLogicValues } from "../../logics/colorLogic";
+import { Color, useColorLogicValues } from "../../logics/colorLogic";
 import { styled } from "styled-components";
 
-const PaletteContainer = styled(Box)`
-  & > div {
-    flex-grow: 1;
-    transition: flex-grow 200ms ease-in-out;
-  }
-  & > div:hover {
-    flex-grow: 1.25;
-  }
-`;
+export const enum ColorPageGrid {
+  Colors = "colors",
+  Greys = "greys",
+  System = "system"
+}
 
-export function ColorPage({ children }: PropsWithChildren): JSX.Element {
-  const { greys, colors, tintCount } = useColorLogicValues();
+interface ColorPageProps {
+  children: React.ReactNode;
+  showLabels?: boolean;
+}
+
+export function ColorPage({ children, showLabels }: ColorPageProps): JSX.Element {
+  const shouldShowLabels = showLabels !== false;
+  const {
+    greys,
+    colors,
+    tintCount,
+    namedColors: allNamedColors,
+  } = useColorLogicValues();
+  const namedColors = (
+    Object.entries(allNamedColors) as [string, Color[]][]
+  ).filter(([name]) => ["primary", "secondary"].includes(name) === false);
 
   return (
     <>
       {children}
-      <PaletteContainer
-        direction="row"
-        basis="100%"
-        height={{ min: "300px" }}
-        flex="grow"
+      <Box
         justify="between"
-        align="stretch"
-        gap="xsmall"
+        gridArea={ColorPageGrid.Colors}
+        className={ColorPageGrid.Colors}
       >
-        <Palette prefix="colors_black" count={greys.length} />
-        {colors.map((paletteColors, index) => (
-          <Palette
-            key={paletteColors[0]?.css}
-            prefix={`colors_${index}`}
-            count={tintCount}
-          />
-        ))}
-      </PaletteContainer>
+        {shouldShowLabels && (
+          <Heading level="3" alignSelf="center">
+            Standard Palette
+          </Heading>
+        )}
+        <Box fill direction="column" wrap align="stretch" justify="stretch">
+          {colors.map((paletteColors, index) => (
+            <Palette
+              key={paletteColors[0]?.css}
+              prefix={`colors_${index}`}
+              count={tintCount}
+            />
+          ))}
+        </Box>
+      </Box>
+
+      {namedColors.length > 0 && (
+        <Box
+          direction="column"
+          justify="between"
+          gridArea={ColorPageGrid.System}
+          className={ColorPageGrid.System}
+        >
+          {shouldShowLabels && (
+            <Heading level="3" alignSelf="center">
+              System Colors
+            </Heading>
+          )}
+          <Box
+            direction="row"
+            height={{ min: "100px" }}
+            justify="between"
+            flex="grow"
+            align="stretch"
+          >
+            {namedColors.map(([, paletteColors]) => (
+              <Palette
+                key={paletteColors[0]?.css}
+                prefix={`colors_${paletteColors[0].paletteName}`}
+                count={paletteColors.length}
+                direction="column"
+              />
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      <Box
+        direction="column"
+        justify="between"
+        gridArea={ColorPageGrid.Greys}
+        className={ColorPageGrid.Greys}
+      >
+        {shouldShowLabels && (
+          <Heading level="3" alignSelf="center">
+            Grey Scale
+          </Heading>
+        )}
+        <Palette
+          prefix="colors_black"
+          direction="column"
+          count={greys.length}
+        />
+      </Box>
     </>
   );
 }

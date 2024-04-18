@@ -1,6 +1,6 @@
 import { Form } from "kea-forms";
 import React from "react";
-import { Box, Grid, Tab, Tabs, TextInput } from "grommet";
+import { Box, BoxProps, Grid, Tab, Tabs, TextInput } from "grommet";
 import { Field } from "../../forms/Field";
 import { RangeInput } from "../../forms/RangeInput";
 import { Code } from "../../typography/code";
@@ -9,21 +9,24 @@ import { BezierCurve, BezierValue } from "../../forms/BezierCurve";
 import { oklchImplicitFormLogic } from "../../../logics/oklchImplicitLogic";
 import { VisuallyHidden } from "../../a11y/VisuallyHidden";
 
+export type ColorFormProps = BoxProps;
+
 const contentWidth = {
   min: "fit-content",
 } as const;
 
-export function ColorForm() {
-  const rangeGrid = useRangeGrid();
+export function ColorForm(props: ColorFormProps) {
+  const rangeGrid = useRangeGrid("small");
 
   return (
     <Form logic={oklchImplicitFormLogic} formKey="colorForm" enableFormOnSubmit>
-      <Box direction="row" gap="medium" align="center" justify="center" wrap>
+      <Box direction="row" gap="xsmall" align="center" justify="between" wrap {...props}>
         <Grid
+          fill="horizontal"
           columns={rangeGrid.columns}
           rows={rangeGrid.rows}
           areas={rangeGrid.areas}
-          gap="medium"
+          gap="xsmall"
           justify="start"
         >
           <Field
@@ -41,6 +44,7 @@ export function ColorForm() {
                 step="1"
                 value={value}
                 onChange={onChange}
+                size="small"
               ></TextInput>
             )}
           </Field>
@@ -75,6 +79,7 @@ export function ColorForm() {
                 id="analogousHueCount"
                 value={value}
                 onChange={onChange}
+                size="small"
               ></TextInput>
             )}
           </Field>
@@ -92,6 +97,7 @@ export function ColorForm() {
               step="0.01"
               name="analogousHueGap"
               id="analogousHueGap"
+              showBounds={false}
             ></RangeInput>
           </Field>
 
@@ -114,6 +120,7 @@ export function ColorForm() {
                 id={ControlGridArea.ComplementaryHueCount}
                 value={value}
                 onChange={onChange}
+                size="small"
               ></TextInput>
             )}
           </Field>

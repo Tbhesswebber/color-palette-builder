@@ -25,6 +25,13 @@ export interface ColorFormFields {
   complementaryHueGap: number;
 }
 
+const enum System {
+  Error = "error",
+  Warning = "warning",
+  Info = "info",
+  Success = "success",
+}
+
 const defaultValues: Required<ColorFormFields> = {
   centerPoint: 197,
   hueFormula: [0, 0.5, 0.5, 0.75, 0.15, 0.2, 1, 0.1],
@@ -162,6 +169,14 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
         return [...analogousHueList, ...complementaryHueList];
       },
     ],
+    systemColors: [(s) => [s.chromaFormula, s.hueFormula, s.lightnessFormula, s.hues], (chromaCurve, hueCurve, lightnessCurve, hues) => {
+      return {
+        [System.Success]: getColorsInRange(3, System.Success, {chromaCurve, hueCurve, lightnessCurve}, hues),
+        [System.Info]: getColorsInRange(3, System.Info, {chromaCurve, hueCurve, lightnessCurve}, hues),
+        [System.Warning]: getColorsInRange(3, System.Warning, {chromaCurve, hueCurve, lightnessCurve}, hues),
+        [System.Error]: getColorsInRange(3, System.Error, {chromaCurve, hueCurve, lightnessCurve}, hues),
+      }
+    }],
   }),
   connectColorLogic({
     greys: calculateGreys,
@@ -173,12 +188,25 @@ export const oklchImplicitFormLogic = kea<oklchImplicitFormLogicType>([
 function calculateColors(
   values: oklchImplicitFormLogicType["values"]
 ): [...Color[]][] {
-  const { lightnessShifts, chromaShifts, hueShifts, tintCount, hues, centerPoint } = values;
+  const {
+    lightnessShifts,
+    chromaShifts,
+    hueShifts,
+    tintCount,
+    hues,
+    centerPoint,
+    colorForm: { analogousHueCount, complementaryHueCount },
+    systemColors
+  } = values;
 
-  return hues.map((hue) =>
-    Array.from({ length: tintCount }, (__, tintIndex) => {
-      const values = {
-        primary: centerPoint === hue,
+  return hues.map((hue, hueIndex) =>
+    {
+      const isPrimary = centerPoint === hue;
+      const isSecondary = hueIndex === analogousHueCount ||
+        (tintCount === analogousHueCount && hueIndex === tintCount - 1);
+      
+      return Array.from({ length: tintCount }, (__, tintIndex) => {
+      const values: Omit<Color, "css"> = {
         // normalize at the center of the y axis
         hue: round((hueShifts[tintIndex].y - 0.5) * 10 + hue),
         // max out at 0.4 - need to add clipping eventually
@@ -187,12 +215,22 @@ function calculateColors(
         lightness: round(99.9 - lightnessShifts[tintIndex].y * 99.8),
       };
 
+      if (isPrimary) {
+        values.primary = true;
+        values.paletteName = "primary";
+      }
+
+      if (isSecondary) {
+        values.secondary = true;
+        values.paletteName = "secondary";
+      }
+
       return {
         ...values,
         css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
       };
-    })
-  );
+    });
+}).concat(Object.values(systemColors));
 }
 
 function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
@@ -233,4 +271,37 @@ function calculateGreys(values: oklchImplicitFormLogicType["values"]) {
       css: `oklch(0.1% 0.017 ${hue}deg)`,
     },
   ];
+}
+
+const HueTargets: Record<System, number> = {
+  [System.Error]: 30,
+  [System.Info]: 260,
+  [System.Success]: 140,
+  [System.Warning]: 90,
+}
+
+function getColorsInRange(count: number, type: System, {chromaCurve, hueCurve, lightnessCurve}: {chromaCurve: Bezier, hueCurve: Bezier, lightnessCurve: Bezier}, hueBlackList: number[]) {
+  const hue = HueTargets[type];
+  const hueShifts = hueCurve.getLUT(count)
+  const chromaShifts = chromaCurve.getLUT(count)
+  const lightnessShifts = lightnessCurve.getLUT(count)
+
+
+
+  return Array.from({length: count}, (_, tintIndex) => {
+    const values: Omit<Color, "css"> = {
+      // normalize at the center of the y axis
+      hue: round((hueShifts[tintIndex].y - 0.5) * 10 + hue),
+      // max out at 0.4 - need to add clipping eventually
+      chroma: round(chromaShifts[tintIndex].y * 0.4),
+      // 100 and 0 lightness are black and white - force colors to be between them
+      lightness: round(99.9 - lightnessShifts[tintIndex].y * 99.8),
+    };
+
+    return {
+      ...values,
+      css: `oklch(${values.lightness}% ${values.chroma} ${values.hue}deg)`,
+      paletteName: type
+    };
+  });
 }

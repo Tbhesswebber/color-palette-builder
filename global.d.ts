@@ -4,7 +4,7 @@ declare global {
     type Require<T, K extends keyof T> = {
         [L in Exclude<keyof T, K>]: T[L];
     } & {
-        [M in Extract<keyof T, K>]-?: T[M];
+        [M in Extract<keyof T, K>]-?: Exclude<T[M], undefined>;
     }
 }
 
