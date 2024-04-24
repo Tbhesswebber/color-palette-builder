@@ -9,6 +9,7 @@ import { routeMap, Scene } from "../router";
 import { OklchImplicit } from "../components/scenes/oklchImplicit";
 import { Home } from "../components/scenes/home";
 import { FluidCalculator } from "../components/scenes/fluidCalculator";
+import { ColorStop } from "../components/scenes/colorStop";
 
 
 
@@ -16,7 +17,8 @@ export const scenes: Record<Scene, () => React.ReactElement> = {
   oklchFormulaic: OklchFormulaic,
   oklchImplicit: OklchImplicit,
   home: Home, 
-  fluid: FluidCalculator
+  fluid: FluidCalculator,
+  colorStop: ColorStop
 };
 
 export const sceneLogic = kea<sceneLogicType>([

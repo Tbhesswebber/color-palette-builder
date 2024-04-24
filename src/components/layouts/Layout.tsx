@@ -22,6 +22,7 @@ const AppWrapper = styled(Box)`
 
 const colorToolMenuItems: MenuProps["items"] = [
   { label: "Oklch Palette Builder", href: Routes.OklchImplicit },
+  { label: "Color Range Generator", href: Routes.ColorStop },
   { label: "Oklch Mathematical Palette Builder", href: Routes.OklchFormulaic },
 ];
 
